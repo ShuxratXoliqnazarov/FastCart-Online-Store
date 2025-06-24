@@ -1,8 +1,35 @@
 import { Button, TextField } from '@mui/material'
 import google from '@/assets/google.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useRegisterStore } from '../../stores/registerStore'
 
 export default function CreateAccount() {
+	const navigate = useNavigate()
+	const { registrate } = useRegisterStore()
+
+	async function handleRegistre(e) {
+		e.preventDefault()
+		let user = {
+			userName: e.target.name.value,
+			phoneNumber: e.target.phone.value,
+			email: e.target.email.value,
+			password: e.target.password.value,
+			confirmPassword: e.target.confirm.value,
+		}
+
+		registrate(user, navigate)
+
+		// registrate(user)
+		// if (registrate.fulfilled.match(result)) {
+		// 	navigate('/login')
+		// }
+		// else{
+		// 	console.log('Oshibka');
+
+		// }
+	}
+
 	return (
 		<>
 			<section className='md:max-w-[1400px] p-5 md:m-auto flex flex-col gap-10 items-center'>
@@ -10,18 +37,60 @@ export default function CreateAccount() {
 					<h1 className='font-bold text-[40px]'>Create an account</h1>
 					<p>Enter your details below</p>
 				</div>
-				<form className='flex flex-col gap-5 md:w-[25%] w-[100%]'>
+				<form
+					onSubmit={e => handleRegistre(e)}
+					className='flex flex-col gap-5 md:w-[25%] w-[100%]'
+				>
 					<div className='flex flex-col gap-5'>
-						<TextField id='outlined-basic' label='Name' variant='outlined' />
 						<TextField
-							id='filled-basic'
-							label='Email or phone number'
+						required
+							id='outlined-basic'
+							label='Name'
 							variant='outlined'
+							name='name'
+							// value={name}
+							// onChange={e => setName(e.target.value)}
 						/>
-						<TextField id='filled-basic' label='Password' variant='outlined' />
+						<TextField
+						required
+							id='filled-basic'
+							label='Email'
+							variant='outlined'
+							name='email'
+							// value={email}
+							// onChange={e => setEmail(e.target.value)}
+						/>
+						<TextField
+						required
+							id='filled-basic'
+							label='Phone number'
+							variant='outlined'
+							name='phone'
+							// value={email}
+							// onChange={e => setEmail(e.target.value)}
+						/>
+						<TextField
+						required
+							id='filled-basic'
+							label='Password'
+							variant='outlined'
+							name='password'
+							// value={password}
+							// onChange={e => setPassword(e.target.value)}
+						/>
+						<TextField
+						required
+							id='filled-basic'
+							label='Confirm password'
+							variant='outlined'
+							name='confirm'
+							// value={password}
+							// onChange={e => setPassword(e.target.value)}
+						/>
 					</div>
 					<div className='flex flex-col gap-3 '>
 						<Button
+							type='submit'
 							variant='outlined'
 							sx={{
 								backgroundColor: '#DB4444',
