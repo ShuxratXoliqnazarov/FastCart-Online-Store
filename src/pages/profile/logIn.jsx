@@ -3,17 +3,22 @@ import { useNavigate } from 'react-router-dom'
 import { useRegisterStore } from '../../stores/registerStore'
 
 export default function LogIn() {
-	const { login } = useRegisterStore()
+	const { login, wrong } = useRegisterStore()
 	const navigate = useNavigate()
 
-	function handleLogin(e) {
+	async function handleLogin(e) {
 		e.preventDefault()
 
 		let user = {
 			userName: e.target.name.value,
 			password: e.target.password.value,
 		}
-		login(user, navigate)
+		let result = await login(user)
+		if (result.success) {
+			navigate('/')
+		} else {
+			console.log(result.error)
+		}
 	}
 
 	return (
@@ -53,7 +58,7 @@ export default function LogIn() {
 								// border: '1px solid gray',
 								padding: '10px 0px',
 							}}
-						>
+							>
 							Forgot Password ?
 						</Button>
 						<Button
@@ -69,10 +74,11 @@ export default function LogIn() {
 								color: 'white',
 							}}
 							type='submit'
-						>
+							>
 							Log In
 						</Button>
 					</div>
+							{wrong && <span className='text-red-600 text-center '>Something is go wrong❗❗❗ </span>}
 				</form>
 			</section>
 		</>

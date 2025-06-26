@@ -1,29 +1,42 @@
 import axios from 'axios'
-// import { useNavigate } from 'react-router-dom'
 import { create } from 'zustand'
 
-export const useRegisterStore = create(() => ({
-	registrate: async (formData , navigate) => {
+export const useRegisterStore = create((set, get) => ({
+	isLoading: false,
+	error: null,
+	wrong: null,
+
+	registrate: async formData => {
 		console.log(formData)
 		try {
-			let { data } = await axios.post(
+			set({ isLoading: true, error: null })
+			let response = await axios.post(
 				'http://37.27.29.18:8002/Account/register',
 				formData
 			)
-			console.log(data)
-			navigate('/login')
+			set({ isLoading: false })
+			return { success: true, data: response.data }
 		} catch (error) {
-			console.log(error)
+			const errMsg = error.response?.data?.message || 'Unknown error'
+			set({ isLoading: false, error: errMsg })
+			return { success: false, error: errMsg }
 		}
 	},
 
-	login: async (user , navigate) => {
+	login: async user => {
 		try {
-			let data = await axios.post('http://37.27.29.18:8002/Account/login', user)
-			navigate('/')
-			localStorage.setItem('token', data.data)
+			set({ isLoading: true, wrong: null })
+			let response = await axios.post(
+				'http://37.27.29.18:8002/Account/login',
+				user
+			)
+			set({ isLoading: false })
+			localStorage.setItem('token', response.data.data)
+			return { success: true, data: response.data.data }
 		} catch (error) {
-			console.log(error)
+			const errMsg = error.response?.data?.message || 'Unknown error'
+			set({ isLoading: false, wrong: errMsg })
+			return { success: false, wrong: errMsg }
 		}
 	},
 }))

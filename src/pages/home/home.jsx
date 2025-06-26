@@ -8,7 +8,7 @@ import jostik from '@/assets/jostik.png'
 import { Button } from '@mui/material'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import phone from '@/assets/phone.png'
 import comp from '@/assets/comp.png'
 import watch from '@/assets/watch.png'
@@ -26,16 +26,29 @@ import service from '@/assets/Services.png'
 import custom from '@/assets/custom.png'
 import ser from '@/assets/ser.png'
 import { useMainStore } from '../../stores/mainStore'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useCartStore } from '../../stores/cartStore'
 
 export default function Home() {
 	const { category, getCategory, getProducts, product } = useMainStore()
+	const { addToCart,  data } = useCartStore()
 	useEffect(() => {
 		getCategory()
 		getProducts()
 	}, [])
-	// console.log(category)
-	// console.log('Products', product)
+	const navigate = useNavigate()
+
+	function handleAddToCart(id) {
+		const token = localStorage.getItem('token')
+
+		if (!token) {
+			alert('Please login or registrate for adding product to cart❗')
+			navigate('/createAcount')
+			return
+		}
+
+		addToCart(id)
+	}
 
 	return (
 		<>
@@ -111,7 +124,7 @@ export default function Home() {
 				</div>
 			</div>
 
-			<section className=' hidden md:block md:max-w-[1400px] md:m-auto'>
+			<section className='hidden md:block md:max-w-[1400px] md:m-auto'>
 				<Swiper
 					spaceBetween={10}
 					slidesPerView={4}
@@ -140,8 +153,11 @@ export default function Home() {
 										alt=''
 										className='h-[150px] w-[230px] rounded-[5px]'
 									/>
-									{/* {console.log('Image', prod.image)} */}
-									<Button variant='outlined' color='inherit'>
+									<Button
+										variant='outlined'
+										color='inherit'
+										onClick={() => handleAddToCart(prod.id)}
+									>
 										Add To Cart
 									</Button>
 								</div>
@@ -185,7 +201,11 @@ export default function Home() {
 										className='h-[150px] w-[230px] rounded-[5px]'
 									/>
 									{/* {console.log('Image', prod.image)} */}
-									<Button variant='outlined' color='inherit'>
+									<Button
+										variant='outlined'
+										color='inherit'
+										onClick={() => handleAddToCart(prod.id)}
+									>
 										Add To Cart
 									</Button>
 								</div>
@@ -252,53 +272,10 @@ export default function Home() {
 									src={`http://37.27.29.18:8002/images/${el.categoryImage}`}
 									alt=''
 								/>
-								<h2>Phones</h2>
+								<h2>{el.categoryName}</h2>
 							</div>
 						</SwiperSlide>
 					))}
-
-					{/* <SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px]  gap-3'>
-							<img src={comp} alt='' />
-							<h2>Computers</h2>
-						</div>
-					</SwiperSlide>
-					<SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px] gap-3'>
-							<img src={watch} alt='' />
-							<h2>Watches</h2>
-						</div>
-					</SwiperSlide>
-					<SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px] bg-[#DB4444] text-white  gap-3'>
-							<img src={camera} alt='' />
-							<h2>Camera</h2>
-						</div>
-					</SwiperSlide>
-					<SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px]  gap-3'>
-							<img src={headphone} alt='' />
-							<h2>Headphone</h2>
-						</div>
-					</SwiperSlide>
-					<SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px]  gap-3'>
-							<img src={phone} alt='' />
-							<h2>Phones</h2>
-						</div>
-					</SwiperSlide>
-					<SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px]  gap-3'>
-							<img src={gamepad} alt='' />
-							<h2>Gamepad</h2>
-						</div>
-					</SwiperSlide>
-					<SwiperSlide>
-						<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px]  gap-3'>
-							<img src={phone} alt='' />
-							<h2>Phones</h2>
-						</div>
-					</SwiperSlide> */}
 				</Swiper>
 			</section>
 
@@ -340,8 +317,11 @@ export default function Home() {
 										alt=''
 										className='h-[150px] w-[230px] rounded-[5px]'
 									/>
-									{/* {console.log('Image', prod.image)} */}
-									<Button variant='outlined' color='inherit'>
+									<Button
+										variant='outlined'
+										color='inherit'
+										onClick={() => handleAddToCart(prod.id)}
+									>
 										Add To Cart
 									</Button>
 								</div>
@@ -392,7 +372,11 @@ export default function Home() {
 										className='h-[150px] w-[230px] rounded-[5px]'
 									/>
 									{/* {console.log('Image', prod.image)} */}
-									<Button variant='outlined' color='inherit'>
+									<Button
+										variant='outlined'
+										color='inherit'
+										onClick={() => handleAddToCart(prod.id)}
+									>
 										Add To Cart
 									</Button>
 								</div>
@@ -469,7 +453,12 @@ export default function Home() {
 									className='h-[150px] w-[230px] rounded-[5px]'
 								/>
 								{/* {console.log('Image', prod.image)} */}
-								<Button variant='outlined' color='inherit'>
+
+								<Button
+									variant='outlined'
+									color='inherit'
+									onClick={() => handleAddToCart(prod.id)}
+								>
 									Add To Cart
 								</Button>
 							</div>
@@ -521,7 +510,11 @@ export default function Home() {
 										className='h-[150px] w-[230px] rounded-[5px]'
 									/>
 									{/* {console.log('Image', prod.image)} */}
-									<Button variant='outlined' color='inherit'>
+									<Button
+										variant='outlined'
+										color='inherit'
+										onClick={() => handleAddToCart(prod.id)}
+									>
 										Add To Cart
 									</Button>
 								</div>

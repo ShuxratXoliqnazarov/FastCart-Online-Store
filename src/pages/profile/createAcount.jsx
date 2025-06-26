@@ -6,7 +6,7 @@ import { useRegisterStore } from '../../stores/registerStore'
 
 export default function CreateAccount() {
 	const navigate = useNavigate()
-	const { registrate } = useRegisterStore()
+	const { registrate, error } = useRegisterStore()
 
 	async function handleRegistre(e) {
 		e.preventDefault()
@@ -18,16 +18,13 @@ export default function CreateAccount() {
 			confirmPassword: e.target.confirm.value,
 		}
 
-		registrate(user, navigate)
+		const result = await registrate(user)
 
-		// registrate(user)
-		// if (registrate.fulfilled.match(result)) {
-		// 	navigate('/login')
-		// }
-		// else{
-		// 	console.log('Oshibka');
-
-		// }
+		if (result.success) {
+			navigate('/login')
+		} else {
+			console.log('Registration error:', result.error)
+		}
 	}
 
 	return (
@@ -43,49 +40,39 @@ export default function CreateAccount() {
 				>
 					<div className='flex flex-col gap-5'>
 						<TextField
-						required
+							required
 							id='outlined-basic'
 							label='Name'
 							variant='outlined'
 							name='name'
-							// value={name}
-							// onChange={e => setName(e.target.value)}
 						/>
 						<TextField
-						required
+							required
 							id='filled-basic'
 							label='Email'
 							variant='outlined'
 							name='email'
-							// value={email}
-							// onChange={e => setEmail(e.target.value)}
 						/>
 						<TextField
-						required
+							required
 							id='filled-basic'
 							label='Phone number'
 							variant='outlined'
 							name='phone'
-							// value={email}
-							// onChange={e => setEmail(e.target.value)}
 						/>
 						<TextField
-						required
+							required
 							id='filled-basic'
 							label='Password'
 							variant='outlined'
 							name='password'
-							// value={password}
-							// onChange={e => setPassword(e.target.value)}
 						/>
 						<TextField
-						required
+							required
 							id='filled-basic'
 							label='Confirm password'
 							variant='outlined'
 							name='confirm'
-							// value={password}
-							// onChange={e => setPassword(e.target.value)}
 						/>
 					</div>
 					<div className='flex flex-col gap-3 '>
@@ -117,6 +104,11 @@ export default function CreateAccount() {
 						</Button>
 					</div>
 				</form>
+				{error && (
+					<span className='text-red-600 mt-[-20px] mb-[-20px]'>
+						Something is go wrong❗❗❗
+					</span>
+				)}
 				<div className='flex gap-5'>
 					<p>Already have account?</p>
 

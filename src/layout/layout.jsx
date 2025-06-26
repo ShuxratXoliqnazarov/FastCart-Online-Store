@@ -15,8 +15,10 @@ import MenuItem from '@mui/material/MenuItem'
 import { useState } from 'react'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { useCartStore } from '../stores/cartStore'
 
 export default function Layout() {
+	const { data } = useCartStore()
 	// ! Multi Language
 	const { t, i18n } = useTranslation()
 	function TranslateClick(lang) {
@@ -78,7 +80,8 @@ export default function Layout() {
 							</Link>
 						</Button>
 					</div>
-					<div>
+					<div className='relative'>
+						<p className='absolute bg-red-600 text-white px-[5px] py-[0px] rounded-[50%] right-3 z-10 top-[-6px]'>{data.length}</p>
 						<Button color='inherit'>
 							<Link to={'/cart'}>
 								<ShoppingCartIcon sx={{ fontSize: '30px' }} />
