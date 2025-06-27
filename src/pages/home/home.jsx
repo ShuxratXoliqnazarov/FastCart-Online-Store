@@ -31,6 +31,7 @@ import { useCartStore } from '../../stores/cartStore'
 import { Toaster } from 'sonner'
 
 export default function Home() {
+	const wish = JSON.parse(localStorage.getItem('wish'))
 	const { category, getCategory, getProducts, product } = useMainStore()
 	const { addToCart, data } = useCartStore()
 	useEffect(() => {
@@ -49,6 +50,18 @@ export default function Home() {
 		}
 
 		addToCart(id)
+	}
+
+	function handleAddToWishlist(prod) {
+		let product = {
+			id: prod.id,
+			productName: prod.productName,
+			image: prod.image,
+			price: prod.price,
+			categoryName: prod.categoryName,
+		}
+		wish.push(product)
+		localStorage.setItem('wish', JSON.stringify(wish))
 	}
 
 	return (
@@ -70,9 +83,6 @@ export default function Home() {
 								</Button>
 							</li>
 						))}
-						{/* <li className='bg-gray-200 p-1 rounded-[5px] md:bg-white'>
-							Button Woman’s Fashion <ArrowForwardIosIcon />
-						</li> */}
 					</ul>
 				</aside>
 				<aside className=' md:w-[70%]'>
@@ -81,7 +91,6 @@ export default function Home() {
 						slidesPerView={1}
 						onSlideChange={() => console.log('slide change')}
 						onSwiper={swiper => console.log(swiper)}
-						// className='h-[400px]'
 					>
 						<SwiperSlide className=''>
 							<img src={iPhone} alt='' className='w-[]' />
@@ -140,10 +149,14 @@ export default function Home() {
 										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
 											<p>-40%</p>
 										</div>
-										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Link to={''}>
+										<div className=' right-[10px] flex flex-row gap-0 top-4'>
+											<Button
+												color='error'
+												onClick={() => handleAddToWishlist(prod)}
+											>
 												<FavoriteBorderOutlinedIcon />
-											</Link>
+											</Button>
+
 											<Link to={'/info/' + prod.id}>
 												<RemoveRedEyeOutlinedIcon />
 											</Link>
@@ -574,7 +587,7 @@ export default function Home() {
 					<p>We reurn money within 30 days</p>
 				</article>
 			</section>
-			<Toaster position="top-right" richColors />
+			<Toaster position='top-right' richColors />
 		</>
 	)
 }

@@ -61,7 +61,6 @@ export default function Profile() {
 							<div className='flex flex-col gap-5  md:w-[47%]'>
 								<TextField
 									id='outlined-basic'
-									// label='First Name'
 									variant='outlined'
 									value={decoded?.name}
 								/>

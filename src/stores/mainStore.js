@@ -1,5 +1,7 @@
-import axios from 'axios'
 import { create } from 'zustand'
+import { axiosRequest } from '../utils/axios'
+import { API } from '../utils/config'
+console.log(API)
 
 export const useMainStore = create((set, get) => ({
 	category: [],
@@ -8,9 +10,7 @@ export const useMainStore = create((set, get) => ({
 
 	getCategory: async () => {
 		try {
-			let { data } = await axios.get(
-				'http://37.27.29.18:8002/Category/get-categories'
-			)
+			let { data } = await axiosRequest.get('/Category/get-categories')
 			set(() => ({ category: data.data }))
 		} catch (error) {
 			console.log(error)
@@ -19,9 +19,7 @@ export const useMainStore = create((set, get) => ({
 
 	getProducts: async () => {
 		try {
-			let { data } = await axios.get(
-				'http://37.27.29.18:8002/Product/get-products'
-			)
+			let { data } = await axiosRequest.get('/Product/get-products')
 			set(() => ({ product: data.data.products }))
 		} catch (error) {
 			console.log(error)

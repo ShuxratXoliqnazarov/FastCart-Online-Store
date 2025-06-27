@@ -1,6 +1,6 @@
-import axios from 'axios'
 import { toast } from 'sonner'
 import { create } from 'zustand'
+import { axiosRequest } from '../utils/axios'
 
 export const useCartStore = create((set, get) => ({
 	data: [],
@@ -10,25 +10,16 @@ export const useCartStore = create((set, get) => ({
 	totalProducts: 0,
 
 	getProduct: async () => {
-		const token = localStorage.getItem('token')
 		try {
-			const response = await axios.get(
-				'http://37.27.29.18:8002/Cart/get-products-from-cart',
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			)
-			// console.log('🔁 Ответ от getProduct:', response.data)
+			const response = await axiosRequest.get('/Cart/get-products-from-cart')
 
 			const cart = response.data.data[0]
 
 			set(() => ({
 				data: cart.productsInCart.map(item => ({
-					...item.product, // достаём name, price, image и т.д.
-					quantity: item.quantity, // добавляем количество
-					cartId: item.id, // id записи в корзине
+					...item.product,
+					quantity: item.quantity,
+					cartId: item.id,
 				})),
 				totalPrice: cart.totalPrice,
 				totalProducts: cart.totalProducts,
@@ -39,19 +30,8 @@ export const useCartStore = create((set, get) => ({
 	},
 
 	addToCart: async id => {
-		const token = localStorage.getItem('token')
-
 		try {
-			await axios.post(
-				`http://37.27.29.18:8002/Cart/add-product-to-cart?id=${id}`,
-				{},
-
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			)
+			await axiosRequest.post(`/Cart/add-product-to-cart?id=${id}`)
 			get().getProduct()
 			toast.info('The product is succesfully added ✅')
 		} catch (error) {
@@ -61,19 +41,8 @@ export const useCartStore = create((set, get) => ({
 	},
 
 	delFromCart: async id => {
-		const token = localStorage.getItem('token')
-
-		console.log(id)
 		try {
-			await axios.delete(
-				'http://37.27.29.18:8002/Cart/delete-product-from-cart?id=' + id,
-
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			)
+			await axiosRequest.delete('/Cart/delete-product-from-cart?id=' + id)
 			get().getProduct()
 		} catch (error) {
 			console.log(error)
@@ -81,13 +50,8 @@ export const useCartStore = create((set, get) => ({
 	},
 
 	clearCart: async () => {
-		const token = localStorage.getItem('token')
 		try {
-			await axios.delete('http://37.27.29.18:8002/Cart/clear-cart', {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
+			await axiosRequest.delete('/Cart/clear-cart', {})
 			get().getProduct()
 		} catch (error) {
 			console.log(error)

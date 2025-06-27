@@ -22,6 +22,7 @@ export default function CreateAccount() {
 
 		if (result.success) {
 			navigate('/login')
+			
 		} else {
 			console.log('Registration error:', result.error)
 		}

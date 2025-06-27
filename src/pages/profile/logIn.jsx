@@ -16,6 +16,7 @@ export default function LogIn() {
 		let result = await login(user)
 		if (result.success) {
 			navigate('/')
+			localStorage.setItem('wish', JSON.stringify([]))
 		} else {
 			console.log(result.error)
 		}
