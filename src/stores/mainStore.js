@@ -3,7 +3,9 @@ import { create } from 'zustand'
 
 export const useMainStore = create((set, get) => ({
 	category: [],
+
 	product: [],
+
 	getCategory: async () => {
 		try {
 			let { data } = await axios.get(
@@ -14,6 +16,7 @@ export const useMainStore = create((set, get) => ({
 			console.log(error)
 		}
 	},
+
 	getProducts: async () => {
 		try {
 			let { data } = await axios.get(

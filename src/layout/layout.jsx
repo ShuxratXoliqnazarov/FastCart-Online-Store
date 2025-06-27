@@ -34,6 +34,11 @@ export default function Layout() {
 		setAnchorEl(null)
 	}
 
+	function logout() {
+		localStorage.removeItem('token')
+		handleClose()
+	}
+
 	return (
 		<>
 			<nav className='p-[20px] border-b-[1px] md:border-none md:p-0 flex items-center md:max-w-[1400px] m-auto justify-between m-t-[20px] mt-[20px] mb-[20px]'>
@@ -81,7 +86,9 @@ export default function Layout() {
 						</Button>
 					</div>
 					<div className='relative'>
-						<p className='absolute bg-red-600 text-white px-[5px] py-[0px] rounded-[50%] right-3 z-10 top-[-6px]'>{data.length}</p>
+						<p className='absolute bg-red-600 text-white px-[5px] py-[0px] rounded-[50%] right-3 z-10 top-[-6px]'>
+							{data.length}
+						</p>
 						<Button color='inherit'>
 							<Link to={'/cart'}>
 								<ShoppingCartIcon sx={{ fontSize: '30px' }} />
@@ -121,7 +128,7 @@ export default function Layout() {
 								<ShoppingBasketIcon /> My Order
 							</Link>
 						</MenuItem>
-						<MenuItem onClick={handleClose}>
+						<MenuItem onClick={logout}>
 							<LogoutIcon /> Logout
 						</MenuItem>
 					</Menu>

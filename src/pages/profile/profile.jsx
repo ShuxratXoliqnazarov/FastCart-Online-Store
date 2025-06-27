@@ -1,5 +1,24 @@
 import { Button, TextField } from '@mui/material'
+import { jwtDecode } from 'jwt-decode'
 import { Link } from 'react-router-dom'
+
+
+
+const token = localStorage.getItem('token')
+let decoded = null
+
+if (typeof token === 'string' && token.trim() !== '') {
+	try {
+		decoded = jwtDecode(token)
+		console.log('DECODE:', decoded)
+	} catch (err) {
+		console.error('Ошибка при декодировании токена:', err)
+	}
+} else {
+	console.warn('Токен не найден или пустой')
+}
+
+console.log('DECODE: ', decoded)
 
 export default function Profile() {
 	return (
@@ -42,8 +61,9 @@ export default function Profile() {
 							<div className='flex flex-col gap-5  md:w-[47%]'>
 								<TextField
 									id='outlined-basic'
-									label='First Name'
+									// label='First Name'
 									variant='outlined'
+									value={decoded?.name}
 								/>
 								<TextField
 									id='outlined-basic'
@@ -54,7 +74,8 @@ export default function Profile() {
 							<div className='flex flex-col gap-5 md:w-[47%] '>
 								<TextField
 									id='outlined-basic'
-									label='Email Address'
+									// label='Email Address'
+									value={decoded?.email}
 									variant='outlined'
 								/>
 								<TextField

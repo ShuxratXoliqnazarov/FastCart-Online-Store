@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'sonner'
 import { create } from 'zustand'
 
 export const useCartStore = create((set, get) => ({
@@ -19,7 +20,7 @@ export const useCartStore = create((set, get) => ({
 					},
 				}
 			)
-			console.log('🔁 Ответ от getProduct:', response.data)
+			// console.log('🔁 Ответ от getProduct:', response.data)
 
 			const cart = response.data.data[0]
 
@@ -52,8 +53,10 @@ export const useCartStore = create((set, get) => ({
 				}
 			)
 			get().getProduct()
+			toast.info('The product is succesfully added ✅')
 		} catch (error) {
 			console.log(error)
+			toast.error('This product is already added on cart❗ ')
 		}
 	},
 
@@ -90,5 +93,4 @@ export const useCartStore = create((set, get) => ({
 			console.log(error)
 		}
 	},
-	
 }))

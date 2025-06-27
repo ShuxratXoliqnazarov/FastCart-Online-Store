@@ -32,9 +32,10 @@ export default function Cart() {
 				<div className='flex flex-col gap-5'>
 					{data.map(el => (
 						<div
-							key={el.id}
-							className='flex flex-wrap items-center justify-between md:flex-row md:justify-between shadow-gray shadow-2xl p-5 md:items-center'
+						key={el.id}
+						className='flex flex-wrap items-center justify-between md:flex-row md:justify-between shadow-gray shadow-2xl p-5 md:items-center'
 						>
+							{console.log( 'QUANTITY: ' , el.quantity)}
 							{console.log('EELL: ', el)}
 							<div className='w-[150px] flex flex-col items-start p-0'>
 								<img
@@ -51,7 +52,7 @@ export default function Cart() {
 								placeholder='0'
 								id=''
 								className='border border-gray w-[80px] h-[40px] rounded-[10px] px-3 text-[20px]'
-								// value={totalProducts}
+								value={el.quantity}
 							/>
 							<p>{totalPrice} сомони</p>
 							<Button onClick={() => delFromCart(el.cartId)}>❌</Button>
@@ -62,7 +63,7 @@ export default function Cart() {
 			<section className='md:max-w-[1400px] md:m-auto md:mt-10 flex p-5 md:p-0 flex-col gap-10'>
 				<div className='flex items-center justify-between'>
 					<Button variant='outlined' color='inherit'>
-						<Link to={'/products'}>Return To Shop</Link>{' '}
+						<Link to={'/products'}>Return To Shop</Link>
 					</Button>
 					<div className='hidden md:flex gap-5'>
 						<Button variant='outlined' color='inherit'>

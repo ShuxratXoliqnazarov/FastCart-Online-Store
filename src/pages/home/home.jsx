@@ -28,10 +28,11 @@ import ser from '@/assets/ser.png'
 import { useMainStore } from '../../stores/mainStore'
 import { useEffect, useState } from 'react'
 import { useCartStore } from '../../stores/cartStore'
+import { Toaster } from 'sonner'
 
 export default function Home() {
 	const { category, getCategory, getProducts, product } = useMainStore()
-	const { addToCart,  data } = useCartStore()
+	const { addToCart, data } = useCartStore()
 	useEffect(() => {
 		getCategory()
 		getProducts()
@@ -143,7 +144,7 @@ export default function Home() {
 											<Link to={''}>
 												<FavoriteBorderOutlinedIcon />
 											</Link>
-											<Link to={'/info'}>
+											<Link to={'/info/' + prod.id}>
 												<RemoveRedEyeOutlinedIcon />
 											</Link>
 										</div>
@@ -573,6 +574,7 @@ export default function Home() {
 					<p>We reurn money within 30 days</p>
 				</article>
 			</section>
+			<Toaster position="top-right" richColors />
 		</>
 	)
 }
