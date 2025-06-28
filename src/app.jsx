@@ -13,6 +13,7 @@ import Profile from './pages/profile/profile'
 import OurStory from './pages/story/our-story'
 import Wishlist from './pages/wishlist/wishlist'
 import { useTranslation } from 'react-i18next'
+import CategoryById from './pages/categoryById/categoryById'
 
 export default function App() {
 	// !Router-Dom
@@ -69,6 +70,10 @@ export default function App() {
 					path: 'wishlist',
 					element: <Wishlist />,
 				},
+				{
+					path: 'category/:id',
+					element: <CategoryById/>
+				}
 			],
 		},
 	])

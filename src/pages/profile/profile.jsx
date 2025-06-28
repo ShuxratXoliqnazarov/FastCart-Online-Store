@@ -1,18 +1,17 @@
 import { Button, TextField } from '@mui/material'
-import { jwtDecode } from 'jwt-decode'
+// import { jwtDecode } from 'jwt-decode'
 import { Link } from 'react-router-dom'
-
-
+import { getToken } from '../../utils/token'
 
 const token = localStorage.getItem('token')
 let decoded = null
 
 if (typeof token === 'string' && token.trim() !== '') {
 	try {
-		decoded = jwtDecode(token)
+		decoded = getToken()
 		console.log('DECODE:', decoded)
 	} catch (err) {
-		console.error('Ошибка при декодировании токена:', err)
+		console.error(err)
 	}
 } else {
 	console.warn('Токен не найден или пустой')

@@ -28,10 +28,10 @@ import ser from '@/assets/ser.png'
 import { useMainStore } from '../../stores/mainStore'
 import { useEffect, useState } from 'react'
 import { useCartStore } from '../../stores/cartStore'
-import { Toaster } from 'sonner'
+import { toast, Toaster } from 'sonner'
+import { withSSR } from 'react-i18next'
 
 export default function Home() {
-	const wish = JSON.parse(localStorage.getItem('wish'))
 	const { category, getCategory, getProducts, product } = useMainStore()
 	const { addToCart, data } = useCartStore()
 	useEffect(() => {
@@ -52,16 +52,30 @@ export default function Home() {
 		addToCart(id)
 	}
 
+	const wish = JSON.parse(localStorage.getItem('wish'))
+
 	function handleAddToWishlist(prod) {
-		let product = {
-			id: prod.id,
-			productName: prod.productName,
-			image: prod.image,
-			price: prod.price,
-			categoryName: prod.categoryName,
+		if (!localStorage.getItem('token')) {
+			alert('Please registrate or login❗')
+			navigate('/login')
+		} else {
+			let find = wish.find(el => el.id == prod.id)
+
+			if (!find) {
+				let product = {
+					id: prod.id,
+					productName: prod.productName,
+					image: prod.image,
+					price: prod.price,
+					categoryName: prod.categoryName,
+				}
+				wish.push(product)
+				localStorage.setItem('wish', JSON.stringify(wish))
+				toast.info('Succesfully added to wishlist✌️')
+			} else {
+				toast.error('The product is already added on wishlist❗')
+			}
 		}
-		wish.push(product)
-		localStorage.setItem('wish', JSON.stringify(wish))
 	}
 
 	return (
@@ -78,8 +92,7 @@ export default function Home() {
 									color='inherit'
 									sx={{ display: 'flex', gap: '80px', padding: '2px 5px' }}
 								>
-									{el.categoryName}
-									<ArrowForwardIosIcon />
+									<Link to={'/category/' + el.id}>{el.categoryName}</Link>
 								</Button>
 							</li>
 						))}
@@ -153,6 +166,7 @@ export default function Home() {
 											<Button
 												color='error'
 												onClick={() => handleAddToWishlist(prod)}
+												// variant='text'
 											>
 												<FavoriteBorderOutlinedIcon />
 											</Button>
@@ -205,8 +219,12 @@ export default function Home() {
 											<p>-40%</p>
 										</div>
 										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<FavoriteBorderOutlinedIcon />
-											<RemoveRedEyeOutlinedIcon />
+											<Button onClick={() => handleAddToWishlist(prod)}>
+												<FavoriteBorderOutlinedIcon />
+											</Button>
+											<Link to={'/info/' + prod.id}>
+												<RemoveRedEyeOutlinedIcon />
+											</Link>
 										</div>
 									</div>
 									<img
@@ -318,10 +336,10 @@ export default function Home() {
 											<p>-40%</p>
 										</div>
 										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Link to={''}>
+											<Button onClick={() => handleAddToWishlist(prod)}>
 												<FavoriteBorderOutlinedIcon />
-											</Link>
-											<Link to={'/info'}>
+											</Button>
+											<Link to={'/info/' + prod.id}>
 												<RemoveRedEyeOutlinedIcon />
 											</Link>
 										</div>
@@ -376,8 +394,12 @@ export default function Home() {
 											<p>-40%</p>
 										</div>
 										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<FavoriteBorderOutlinedIcon />
-											<RemoveRedEyeOutlinedIcon />
+											<Button onClick={() => handleAddToWishlist(prod)}>
+												<FavoriteBorderOutlinedIcon />
+											</Button>
+											<Link to={'/info/' + prod.id}>
+												<RemoveRedEyeOutlinedIcon />
+											</Link>
 										</div>
 									</div>
 									<img
@@ -453,10 +475,10 @@ export default function Home() {
 										<p>-40%</p>
 									</div>
 									<div className=' right-[10px] flex flex-row gap-5 top-4'>
-										<Link to={''}>
+										<Button onClick={() => handleAddToWishlist(prod)}>
 											<FavoriteBorderOutlinedIcon />
-										</Link>
-										<Link to={'/info'}>
+										</Button>
+										<Link to={'/info/' + prod.id}>
 											<RemoveRedEyeOutlinedIcon />
 										</Link>
 									</div>
@@ -514,8 +536,12 @@ export default function Home() {
 											<p>-40%</p>
 										</div>
 										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<FavoriteBorderOutlinedIcon />
-											<RemoveRedEyeOutlinedIcon />
+											<Button onClick={() => handleAddToWishlist(prod)}>
+												<FavoriteBorderOutlinedIcon />
+											</Button>
+											<Link to={'/info/' + prod.id}>
+												<RemoveRedEyeOutlinedIcon />
+											</Link>
 										</div>
 									</div>
 									<img

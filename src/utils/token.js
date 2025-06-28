@@ -1,4 +1,4 @@
-const { jwtDecode } = require('jwt-decode')
+import {jwtDecode} from 'jwt-decode'
 
 function getToken() {
 	return jwtDecode(localStorage.getItem('token'))
@@ -8,7 +8,7 @@ function saveToken(token) {
 	localStorage.setItem('token', token)
 }
 
-function removeToken(token) {
+function removeToken() {
 	localStorage.removeItem('token')
 }
 

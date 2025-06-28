@@ -32,10 +32,10 @@ export default function Cart() {
 				<div className='flex flex-col gap-5'>
 					{data.map(el => (
 						<div
-						key={el.id}
-						className='flex flex-wrap items-center justify-between md:flex-row md:justify-between shadow-gray shadow-2xl p-5 md:items-center'
+							key={el.id}
+							className='flex flex-wrap items-center justify-between md:flex-row md:justify-between shadow-gray shadow-2xl p-5 md:items-center'
 						>
-							{console.log( 'QUANTITY: ' , el.quantity)}
+							{console.log('QUANTITY: ', el.quantity)}
 							{console.log('EELL: ', el)}
 							<div className='w-[150px] flex flex-col items-start p-0'>
 								<img
@@ -79,7 +79,7 @@ export default function Cart() {
 							<ReplayIcon />
 						</Button>
 						<Button color='error'>
-							<DeleteOutlineIcon />
+							<DeleteOutlineIcon onClick={clearCart} />
 						</Button>
 					</div>
 				</div>

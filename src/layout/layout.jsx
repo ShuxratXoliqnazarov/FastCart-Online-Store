@@ -16,6 +16,7 @@ import { useState } from 'react'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useCartStore } from '../stores/cartStore'
+import { removeToken } from '../utils/token'
 
 export default function Layout() {
 	const { data } = useCartStore()
@@ -35,18 +36,24 @@ export default function Layout() {
 	}
 
 	function logout() {
-		localStorage.removeItem('token')
+		removeToken()
 		handleClose()
 	}
+	let darozi = JSON.parse(localStorage.getItem('wish'))
+	console.log('DAROZI: ', darozi)
 
 	return (
 		<>
 			<nav className='p-[20px] border-b-[1px] md:border-none md:p-0 flex items-center md:max-w-[1400px] m-auto justify-between m-t-[20px] mt-[20px] mb-[20px]'>
 				<div className=' flex items-center gap-2  md:hidden'>
 					<MenuOutlinedIcon sx={{ fontSize: '30px' }} />
-					<h1 className='md:hidden font-bold text-[35px]'>Exclusive</h1>
+					<Link to={'/'}>
+						<h1 className='md:hidden font-bold text-[35px]'>Exclusive</h1>
+					</Link>
 				</div>
-				<img src={logo} alt='' className='hidden md:block' />
+				<Link to={'/'}>
+					<img src={logo} alt='' className='hidden md:block' />
+				</Link>
 				<ul className=' hidden md:flex items-center gap-10'>
 					<li>
 						<Button color='inherit'>
@@ -78,7 +85,10 @@ export default function Layout() {
 						/>
 					</div>
 
-					<div className='hidden md:block'>
+					<div className='hidden md:block relative'>
+						<p className='absolute bg-red-600 text-white px-[5px] py-[0px] rounded-[50%] right-3 z-10 top-[-6px]'>
+							{darozi != '' && darozi != null ? darozi.length : 0}
+						</p>
 						<Button color='inherit' className='hidden'>
 							<Link to={'/wishlist'}>
 								<FavoriteBorderIcon />
@@ -124,12 +134,17 @@ export default function Layout() {
 							</Link>
 						</MenuItem>
 						<MenuItem onClick={handleClose}>
-							<Link to={'/cart'}>
-								<ShoppingBasketIcon /> My Order
+							<Link to={'/products'}>
+								<ShoppingBasketIcon /> All Products
 							</Link>
 						</MenuItem>
 						<MenuItem onClick={logout}>
 							<LogoutIcon /> Logout
+						</MenuItem>
+						<MenuItem>
+							<Link to={'/wishlist'}>
+								<FavoriteBorderIcon /> Wishlist
+							</Link>
 						</MenuItem>
 					</Menu>
 				</div>
