@@ -17,6 +17,8 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useCartStore } from '../stores/cartStore'
 import { removeToken } from '../utils/token'
+import { Toaster } from 'sonner'
+import { useWishlistStore } from '../stores/wishlistStore'
 
 export default function Layout() {
 	const { data } = useCartStore()
@@ -39,8 +41,9 @@ export default function Layout() {
 		removeToken()
 		handleClose()
 	}
-	let darozi = JSON.parse(localStorage.getItem('wish'))
-	console.log('DAROZI: ', darozi)
+	// let darozi = JSON.parse(localStorage.getItem('wish'))
+	const wishlistCount = useWishlistStore(state => state.items.length);
+	// console.log('DAROZI: ', darozi.state.items.length)
 
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -90,7 +93,9 @@ export default function Layout() {
 					<div className='flex items-center'>
 						<div className='hidden md:block relative'>
 							<p className='absolute bg-red-600 text-white px-[5px] py-[0px] rounded-[50%] right-3 z-10 top-[-6px]'>
-								{darozi != '' && darozi != null ? darozi.length : 0}
+								{/* {darozi.state.items != '' && darozi.state.items != null ? darozi.state.items.length : 0} */}
+								{/* {darozi.state.items.length} */}
+								{wishlistCount}
 							</p>
 							<Button color='inherit' className='hidden'>
 								<Link to={'/wishlist'}>
@@ -387,6 +392,8 @@ export default function Layout() {
 					</div>
 				</footer>
 			</div>
+
+			<Toaster position='top-right' richColors />
 		</>
 	)
 }

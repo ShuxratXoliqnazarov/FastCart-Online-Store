@@ -5,6 +5,7 @@ import 'swiper/css'
 import { Button } from '@mui/material'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import { Link, useNavigate } from 'react-router-dom'
 import pq from '@/assets/pq.jpeg'
 import k from '@/assets/k.jpeg'
@@ -26,10 +27,13 @@ import { API } from '../../utils/config'
 import { Autoplay, Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
+import { useWishlistStore } from '../../stores/wishlistStore' 
+import naush from '@/assets/naush.jpeg'
 
 export default function Home() {
 	const { category, getCategory, getProducts, product } = useMainStore()
 	const { addToCart, data } = useCartStore()
+
 	useEffect(() => {
 		getCategory()
 		getProducts()
@@ -48,39 +52,32 @@ export default function Home() {
 		addToCart(id)
 	}
 
-	const wish = JSON.parse(localStorage.getItem('wish'))
+	// ! Wishlist functions
+	const addItemToWishlist = useWishlistStore(state => state.addItem)
+	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
+	const isInWishlist = useWishlistStore(state => state.isInWishlist)
 
-	function handleAddToWishlist(prod) {
+	function handleToggleWishlist(prod) {
 		if (!localStorage.getItem('token')) {
 			alert('Please registrate or login❗')
 			navigate('/login')
-		} else {
-			let find = wish.find(el => el.id == prod.id)
+			return
+		}
 
-			if (!find) {
-				let product = {
-					id: prod.id,
-					productName: prod.productName,
-					image: prod.image,
-					price: prod.price,
-					categoryName: prod.categoryName,
-				}
-				wish.push(product)
-				localStorage.setItem('wish', JSON.stringify(wish))
-				toast.info('Succesfully added to wishlist✌️')
-			} else {
-				toast.error('The product is already added on wishlist❗')
-			}
+		if (isInWishlist(prod.id)) {
+			removeItemFromWishlist(prod.id)
+			// toast.info('Successfully removed from wishlist✌️')
+		} else {
+			addItemToWishlist(prod)
+			// toast.info('Successfully added to wishlist✌️')
 		}
 	}
 
 	const SwiperNavButtons = () => {
-		const swiper = useSwiper() // Получаем экземпляр Swiper
+		const swiper = useSwiper()
 
 		return (
 			<div className='absolute top-[-20px] right-0 z-10 flex gap-2 mt-4 mr-4'>
-				{' '}
-				{/* Расположение кнопок */}
 				<button
 					className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
 					onClick={() => swiper.slidePrev()}
@@ -200,9 +197,9 @@ export default function Home() {
 						</SwiperSlide>
 						<SwiperSlide className='mt-[50px]'>
 							<img
-								src={k}
+								src={naush}
 								alt='iPhone image 4'
-								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px]'
+								className='w-full h-[280px]  md:h-[450px] md:rounded-[10px]'
 							/>
 						</SwiperSlide>
 					</Swiper>
@@ -259,14 +256,20 @@ export default function Home() {
 										<div className='absolute top-3 right-3 flex flex-row gap-2'>
 											<Button
 												color='error'
-												onClick={() => handleAddToWishlist(el)}
+												onClick={() => handleToggleWishlist(el)}
 												className='hover:scale-110 transition-transform'
 												sx={{
 													backgroundColor: '',
-													color: 'red',
+													// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+													color: isInWishlist(el.id) ? 'red' : 'gray',
 												}}
 											>
-												<FavoriteBorderOutlinedIcon />
+												{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+												{isInWishlist(el.id) ? (
+													<FavoriteIcon />
+												) : (
+													<FavoriteBorderOutlinedIcon />
+												)}
 											</Button>
 											<Link
 												to={'/info/' + el.id}
@@ -327,14 +330,20 @@ export default function Home() {
 									<div className='absolute top-3 right-3 flex flex-row gap-2'>
 										<Button
 											color='error'
-											onClick={() => handleAddToWishlist(el)}
+											onClick={() => handleToggleWishlist(el)}
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												color: 'red',
+												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											<FavoriteBorderOutlinedIcon />
+											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+											{isInWishlist(el.id) ? (
+												<FavoriteIcon />
+											) : (
+												<FavoriteBorderOutlinedIcon />
+											)}
 										</Button>
 										<Link
 											to={'/info/' + el.id}
@@ -380,7 +389,7 @@ export default function Home() {
 			{/* //? Swiper 2 (categoris) */}
 
 			<section className=' hidden md:block md:max-w-[1400px] m-auto md:mt-[50px]'>
-				<div className=' w-[150px] flex justify-between items-center mb-[30px]  mt-5 md:ml-[0px]'>
+				<div className=' w-[150px] flex justify-between items-center mb-[30px]  mt-5 md:ml-[0px]'>
 					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
 					<p className='font-bold text-[20px] text-[#DB4444]'>Categories</p>
 				</div>
@@ -509,14 +518,20 @@ export default function Home() {
 										<div className='absolute top-3 right-3 flex flex-row gap-2'>
 											<Button
 												color='error'
-												onClick={() => handleAddToWishlist(el)}
+												onClick={() => handleToggleWishlist(el)}
 												className='hover:scale-110 transition-transform'
 												sx={{
 													backgroundColor: '',
-													color: 'red',
+													// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+													color: isInWishlist(el.id) ? 'red' : 'gray',
 												}}
 											>
-												<FavoriteBorderOutlinedIcon />
+												{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+												{isInWishlist(el.id) ? (
+													<FavoriteIcon />
+												) : (
+													<FavoriteBorderOutlinedIcon />
+												)}
 											</Button>
 											<Link
 												to={'/info/' + el.id}
@@ -554,7 +569,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section className='p-5 md:hidden  '>
+			<section className='p-5 md:hidden  '>
 				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
 					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
 					<p className='font-bold text-[20px] text-[#DB4444]'>This Month</p>
@@ -584,14 +599,20 @@ export default function Home() {
 									<div className='absolute top-3 right-3 flex flex-row gap-2'>
 										<Button
 											color='error'
-											onClick={() => handleAddToWishlist(el)}
+											onClick={() => handleToggleWishlist(el)}
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												color: 'red',
+												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											<FavoriteBorderOutlinedIcon />
+											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+											{isInWishlist(el.id) ? (
+												<FavoriteIcon />
+											) : (
+												<FavoriteBorderOutlinedIcon />
+											)}
 										</Button>
 										<Link
 											to={'/info/' + el.id}
@@ -666,69 +687,78 @@ export default function Home() {
 
 				<div className='grid columns-4 grid-cols-4 gap-10'>
 					{product?.map(el => (
-						<article
-							key={el.id}
-							className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
-						>
-							<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
-								<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
-									-40%
-								</div>
-								<div className='absolute top-3 right-3 flex flex-row gap-2'>
+						<SwiperSlide className='mt-10' key={el.id}>
+							<article
+								key={el.id}
+								className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+							>
+								<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+									<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+										-40%
+									</div>
+									<div className='absolute top-3 right-3 flex flex-row gap-2'>
+										<Button
+											color='error'
+											onClick={() => handleToggleWishlist(el)}
+											className='hover:scale-110 transition-transform'
+											sx={{
+												backgroundColor: '',
+												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+												color: isInWishlist(el.id) ? 'red' : 'gray',
+											}}
+										>
+											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+											{isInWishlist(el.id) ? (
+												<FavoriteIcon />
+											) : (
+												<FavoriteBorderOutlinedIcon />
+											)}
+										</Button>
+										<Link
+											to={'/info/' + el.id}
+											className='hover:scale-110 transition-transform'
+										>
+											<RemoveRedEyeOutlinedIcon />
+										</Link>
+									</div>
+									<img
+										src={`${API}/images/${el.image}`}
+										alt=''
+										className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
+									/>
 									<Button
-										color='error'
-										onClick={() => handleAddToWishlist(el)}
-										className='hover:scale-110 transition-transform'
-										sx={{
-											backgroundColor: '',
-											color: 'red',
-										}}
+										variant='outlined'
+										color='inherit'
+										onClick={() => handleAddToCart(el.id)}
+										className='hover:bg-gray-300 transition-colors'
 									>
-										<FavoriteBorderOutlinedIcon />
+										Add To Cart
 									</Button>
-									<Link
-										to={'/info/' + el.id}
-										className='hover:scale-110 transition-transform'
-									>
-										<RemoveRedEyeOutlinedIcon />
-									</Link>
 								</div>
-								<img
-									src={`${API}/images/${el.image}`}
-									alt=''
-									className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
-								/>
-								<Button
-									variant='outlined'
-									color='inherit'
-									onClick={() => handleAddToCart(el.id)}
-									className='hover:bg-gray-300 transition-colors'
-								>
-									Add To Cart
-								</Button>
-							</div>
-							<div className='flex flex-col items-start gap-2'>
-								<h2 className='font-bold text-xl'>{el.productName}</h2>
-								<div className='flex gap-4 items-center'>
-									<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
-									<p className='line-through text-gray-400'>$160</p>
+								<div className='flex flex-col items-start gap-2'>
+									<h2 className='font-bold text-xl'>{el.productName}</h2>
+									<div className='flex gap-4 items-center'>
+										<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+										<p className='line-through text-gray-400'>$160</p>
+									</div>
+									<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 								</div>
-								<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
-							</div>
-						</article>
+							</article>
+						</SwiperSlide>
 					))}
 				</div>
 			</section>
 
-			<section className=' p-5 md:hidden md:max-w-[1400px] md:m-auto'>
+			<section className='  md:hidden p-5'>
 				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
 					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
 					<p className='font-bold text-[20px] text-[#DB4444]'>Our Products</p>
 				</div>
-				<div className='md:flex md:justify-between md:items-center md:mb-[40px] mb-10 '>
-					<h1 className='text-[35px] font-bold'>Explore Our Products</h1>
+				<div className='md:flex md:justify-between md:items-center md:mb-[40px] '>
+					<h1 className='md:text-[30px] font-bold md:mb-[30px]'>
+						Explore Our Products
+					</h1>
 				</div>
-
 				<Swiper
 					spaceBetween={10}
 					slidesPerView={1.1}
@@ -737,7 +767,6 @@ export default function Home() {
 					className='h-[550px]'
 				>
 					<SwiperNavButtons />
-
 					{product?.map(el => (
 						<SwiperSlide className='mt-10' key={el.id}>
 							<article
@@ -751,14 +780,20 @@ export default function Home() {
 									<div className='absolute top-3 right-3 flex flex-row gap-2'>
 										<Button
 											color='error'
-											onClick={() => handleAddToWishlist(el)}
+											onClick={() => handleToggleWishlist(el)}
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												color: 'red',
+												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											<FavoriteBorderOutlinedIcon />
+											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+											{isInWishlist(el.id) ? (
+												<FavoriteIcon />
+											) : (
+												<FavoriteBorderOutlinedIcon />
+											)}
 										</Button>
 										<Link
 											to={'/info/' + el.id}
@@ -795,49 +830,16 @@ export default function Home() {
 				</Swiper>
 			</section>
 
-			<button className='bg-[#DB4444] text-white px-10 py-4 block m-auto mt-[50px]'>
-				<Link to={'/products'}>View All Products</Link>{' '}
-			</button>
-
-			<section className='p-5  md:max-w-[1400px] md:m-auto md:mt-[40px] '>
-				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
-					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
-					<p className='font-bold text-[20px] text-[#DB4444]'>Featured</p>
-				</div>
-				<div className='md:flex md:justify-between md:items-center md:mb-[40px] '>
-					<h1 className='text-[35px] font-bold'>New Arrival</h1>
-				</div>
-
-				<div className='flex md:flex-row md:justify-between flex-col gap-5 md:items-center'>
-					<img src={ps} alt='' />
-					<aside className='md:flex flex-col gap-5 md:gap-7'>
-						<img src={woman} alt='' />
-						<div className='flex md:flex-row flex-col gap-5  md:gap-7'>
-							<img src={speaker} alt='' className='mt-[20px] md:m-0 ' />
-							<img src={parfume} alt='' />
-						</div>
-					</aside>
-				</div>
+			<section className='flex md:flex-row gap-5 flex-col p-5 md:justify-between md:mt-[100px]  md:max-w-[1400px] md:m-auto'>
+				<img src={ps} alt='' />
+				<aside className='md:w-[50%]  '>
+					<img src={woman} alt='' className='w-[100%]' />
+					<div className='flex md:flex-row flex-col gap-5  md:justify-between mt-[30px] items-center'>
+						<img className='md:w-[45%] w-[100%]' src={speaker} />
+						<img className='md:w-[45%] w-[100%]' src={parfume} />
+					</div>
+				</aside>
 			</section>
-
-			<section className='md:max-w-[1400px] md:m-auto flex flex-col p-5 items-center md:flex-row md:justify-between md:mt-[60px] md:mb-[60px]'>
-				<article className=' w-[300px] flex flex-col gap-2 p-5 items-center '>
-					<img src={service} alt='' />
-					<h2>FREE AND FAST DELIVERY</h2>
-					<p>Free delivery for all orders over $140</p>
-				</article>
-				<article className=' w-[300px] flex flex-col gap-2 p-5 items-center '>
-					<img src={custom} alt='' />
-					<h2>24/7 CUSTOMER SERVICE</h2>
-					<p>Friendly 24/7 customer support</p>
-				</article>
-				<article className=' w-[300px] flex flex-col gap-2 p-5 items-center '>
-					<img src={ser} alt='' />
-					<h2>MONEY BACK GUARANTEE</h2>
-					<p>We reurn money within 30 days</p>
-				</article>
-			</section>
-			<Toaster position='top-right' richColors />
 		</>
 	)
 }

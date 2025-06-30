@@ -58,11 +58,22 @@ export const useFilterStore = create((set, get) => ({
 			console.log(error)
 		}
 	},
-	
+
 	getBrand: async () => {
 		try {
 			let { data } = await axiosStandart.get('Brand/get-brands')
 			set(() => ({ brands: data.data }))
+		} catch (error) {
+			console.log(error)
+		}
+	},
+
+	searchFunc: async names => {
+		try {
+			let { data } = await axiosStandart(
+				`/Product/get-products?ProductName=${names}`
+			)
+			set(() => ({ product: data.data.products }))
 		} catch (error) {
 			console.log(error)
 		}

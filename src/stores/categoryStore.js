@@ -21,7 +21,6 @@ export const useCategory = create((set, get) => ({
 				`/Product/get-products?CategoryId=${id}`
 			)
 			if (data.data.products.length > 0) {
-				console.log(data.data.products.length)
 				set(() => ({ product: data.data.products }))
 			} else {
 				set(() => ({ product: [] }))

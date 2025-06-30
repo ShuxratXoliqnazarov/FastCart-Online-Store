@@ -17,8 +17,21 @@ import { API } from '../../utils/config'
 import { useMainStore } from '../../stores/mainStore'
 import { useCartStore } from '../../stores/cartStore'
 import { toast, Toaster } from 'sonner'
+import { useWishlistStore } from '../../stores/wishlistStore'
 
 export default function Products() {
+	const {
+		getCategory,
+		category,
+		getProducts,
+		product,
+		cotegoryFiltre,
+		getBrand,
+		brands,
+		brandFiltre,
+		priceFiltre,
+		searchFunc,
+	} = useFilterStore()
 	const [selectedBrands, setSelectedBrands] = useState([])
 	const [minPrice, setMinPrice] = useState(0)
 	const [maxPrice, setMaxPrice] = useState(10000)
@@ -43,17 +56,6 @@ export default function Products() {
 	}
 
 	const [value, setValue] = useState(2)
-	const {
-		getCategory,
-		category,
-		getProducts,
-		product,
-		cotegoryFiltre,
-		getBrand,
-		brands,
-		brandFiltre,
-		priceFiltre,
-	} = useFilterStore()
 
 	const { addToCart } = useCartStore()
 	useEffect(() => {
@@ -62,30 +64,98 @@ export default function Products() {
 		getBrand()
 	}, [])
 
-	const wish = JSON.parse(localStorage.getItem('wish'))
-	function handleAddToWishlist(prod) {
+	// const wish = JSON.parse(localStorage.getItem('wish'))
+	// function handleAddToWishlist(prod) {
+	// 	if (!localStorage.getItem('token')) {
+	// 		alert('Please registrate or login❗')
+	// 		navigate('/login')
+	// 	} else {
+	// 		let find = wish.find(el => el.id == prod.id)
+
+	// 		if (!find) {
+	// 			let product = {
+	// 				id: prod.id,
+	// 				productName: prod.productName,
+	// 				image: prod.image,
+	// 				price: prod.price,
+	// 				categoryName: prod.categoryName,
+	// 			}
+	// 			wish.push(product)
+	// 			localStorage.setItem('wish', JSON.stringify(wish))
+	// 			toast.info('Succesfully added to wishlist✌️')
+	// 		} else {
+	// 			toast.error('The product is already added on wishlist❗')
+	// 		}
+	// 	}
+	// }
+
+	// ! Wishlist functions
+	const addItemToWishlist = useWishlistStore(state => state.addItem)
+	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
+	const isInWishlist = useWishlistStore(state => state.isInWishlist)
+
+	function handleToggleWishlist(prod) {
 		if (!localStorage.getItem('token')) {
 			alert('Please registrate or login❗')
 			navigate('/login')
-		} else {
-			let find = wish.find(el => el.id == prod.id)
+			return
+		}
 
-			if (!find) {
-				let product = {
-					id: prod.id,
-					productName: prod.productName,
-					image: prod.image,
-					price: prod.price,
-					categoryName: prod.categoryName,
-				}
-				wish.push(product)
-				localStorage.setItem('wish', JSON.stringify(wish))
-				toast.info('Succesfully added to wishlist✌️')
-			} else {
-				toast.error('The product is already added on wishlist❗')
-			}
+		if (isInWishlist(prod.id)) {
+			removeItemFromWishlist(prod.id)
+			// toast.info('Successfully removed from wishlist✌️')
+		} else {
+			addItemToWishlist(prod)
+			// toast.info('Successfully added to wishlist✌️')
 		}
 	}
+
+	// const SwiperNavButtons = () => {
+	// 	const swiper = useSwiper()
+
+	// 	return (
+	// 		<div className='absolute top-[-20px] right-0 z-10 flex gap-2 mt-4 mr-4'>
+	// 			<button
+	// 				className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
+	// 				onClick={() => swiper.slidePrev()}
+	// 			>
+	// 				<svg
+	// 					className='w-5 h-5 text-gray-700'
+	// 					fill='none'
+	// 					stroke='currentColor'
+	// 					viewBox='0 0 24 24'
+	// 					xmlns='http://www.w3.org/2000/svg'
+	// 				>
+	// 					<path
+	// 						strokeLinecap='round'
+	// 						strokeLinejoin='round'
+	// 						strokeWidth='2'
+	// 						d='M10 19l-7-7m0 0l7-7m-7 7h18'
+	// 					></path>
+	// 				</svg>
+	// 			</button>
+	// 			<button
+	// 				className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
+	// 				onClick={() => swiper.slideNext()}
+	// 			>
+	// 				<svg
+	// 					className='w-5 h-5 text-gray-700'
+	// 					fill='none'
+	// 					stroke='currentColor'
+	// 					viewBox='0 0 24 24'
+	// 					xmlns='http://www.w3.org/2000/svg'
+	// 				>
+	// 					<path
+	// 						strokeLinecap='round'
+	// 						strokeLinejoin='round'
+	// 						strokeWidth='2'
+	// 						d='M14 5l7 7m0 0l-7 7m7-7H3'
+	// 					></path>
+	// 				</svg>
+	// 			</button>
+	// 		</div>
+	// 	)
+	// }
 
 	function handleAddToCart(id) {
 		const token = localStorage.getItem('token')
@@ -98,16 +168,41 @@ export default function Products() {
 
 		addToCart(id)
 	}
+
+	// ! Search
+	const [search, setSearch] = useState('')
 	return (
 		<>
+			<div className='hidden  max-w-[1400px] m-auto p-5 md:flex justify-between'>
+				<h1 className='text-[40px]'>Filtre</h1>
+				<div className=' w-[30%]'>
+					<TextField
+						id='outlined-basic'
+						label='Search by name'
+						variant='outlined'
+						sx={{ width: '100%' }}
+						value={search}
+						onChange={e => {
+							setSearch(e.target.value)
+							searchFunc(e.target.value)
+						}}
+					/>
+				</div>
+			</div>
+
 			<section className='p-5 items-center flex-col md:max-w-[1400px] md:m-auto flex md:flex-row md:justify-between md:items-start '>
-				<aside className='md:w-[25%] flex flex-col'>
+				<aside className='md:w-[25%] flex flex-col py-5'>
 					<div className='md:hidden w-[100%] my-5'>
 						<TextField
 							id='outlined-basic'
-							label='Search'
+							label='Search bu name'
 							variant='outlined'
-							sx={{width:'100%'}}
+							sx={{ width: '100%' }}
+							value={search}
+							onChange={e => {
+								setSearch(e.target.value)
+								searchFunc(e.target.value)
+							}}
 						/>
 					</div>
 
@@ -289,25 +384,8 @@ export default function Products() {
 						</AccordionDetails>
 					</Accordion>
 				</aside>
-				{/* <div className='md:hidden w-[100%] flex items-center flex-col gap-5 '>
-					<TextField
-						id='outlined-basic'
-						label='Search'
-						variant='outlined'
-						sx={{ width: '100%' }}
-					/>
 
-					<div className='flex justify-between w-[100%]  '>
-						<Button color='inherit' variant='outlined' sx={{ width: '45%' }}>
-							Popular
-						</Button>
-						<Button color='inherit' variant='outlined' sx={{ width: '45%' }}>
-							Filter (3)
-						</Button>
-					</div>
-				</div> */}
-
-				<aside className='w-[100%] items-center  flex flex-col md:flex-row md:flex-wrap md:gap-6 gap-12 mt-10 md:w-[70%]'>
+				<aside className='w-[100%] items-center  flex flex-col md:flex-row md:flex-wrap md:gap-6 gap-12 mt-10 md:mt-0 md:w-[70%]'>
 					{product?.map(el => (
 						<article
 							key={el.id}
@@ -320,14 +398,20 @@ export default function Products() {
 								<div className='absolute top-3 right-3 flex flex-row gap-2'>
 									<Button
 										color='error'
-										onClick={() => handleAddToWishlist(el)}
+										onClick={() => handleToggleWishlist(el)}
 										className='hover:scale-110 transition-transform'
 										sx={{
 											backgroundColor: '',
-											color: 'red',
+											// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+											color: isInWishlist(el.id) ? 'red' : 'gray',
 										}}
 									>
-										<FavoriteBorderOutlinedIcon />
+										{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+										{isInWishlist(el.id) ? (
+											<FavoriteIcon />
+										) : (
+											<FavoriteBorderOutlinedIcon />
+										)}
 									</Button>
 									<Link
 										to={'/info/' + el.id}
