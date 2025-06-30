@@ -1,21 +1,14 @@
-// Import Swiper React components
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
 import iPhone from '@/assets/iPhone.png'
-// Import Swiper styles
 import 'swiper/css'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import jostik from '@/assets/jostik.png'
+
 import { Button } from '@mui/material'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 import { Link, useNavigate } from 'react-router-dom'
-import phone from '@/assets/phone.png'
-import comp from '@/assets/comp.png'
-import watch from '@/assets/watch.png'
-import camera from '@/assets/camera.png'
-import headphone from '@/assets/headphone.png'
-import gamepad from '@/assets/gamepad.png'
-import kalonka from '@/assets/kalonka.png'
+import pq from '@/assets/pq.jpeg'
+import k from '@/assets/k.jpeg'
+import mackBook from '@/assets/p.jpeg'
 import jbl from '@/assets/jbl.png'
 import girdak from '@/assets/girdak.png'
 import ps from '@/assets/ps.png'
@@ -29,7 +22,10 @@ import { useMainStore } from '../../stores/mainStore'
 import { useEffect, useState } from 'react'
 import { useCartStore } from '../../stores/cartStore'
 import { toast, Toaster } from 'sonner'
-import { withSSR } from 'react-i18next'
+import { API } from '../../utils/config'
+import { Autoplay, Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 export default function Home() {
 	const { category, getCategory, getProducts, product } = useMainStore()
@@ -78,9 +74,77 @@ export default function Home() {
 		}
 	}
 
+	const SwiperNavButtons = () => {
+		const swiper = useSwiper() // Получаем экземпляр Swiper
+
+		return (
+			<div className='absolute top-[-20px] right-0 z-10 flex gap-2 mt-4 mr-4'>
+				{' '}
+				{/* Расположение кнопок */}
+				<button
+					className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
+					onClick={() => swiper.slidePrev()}
+				>
+					<svg
+						className='w-5 h-5 text-gray-700'
+						fill='none'
+						stroke='currentColor'
+						viewBox='0 0 24 24'
+						xmlns='http://www.w3.org/2000/svg'
+					>
+						<path
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth='2'
+							d='M10 19l-7-7m0 0l7-7m-7 7h18'
+						></path>
+					</svg>
+				</button>
+				<button
+					className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
+					onClick={() => swiper.slideNext()}
+				>
+					<svg
+						className='w-5 h-5 text-gray-700'
+						fill='none'
+						stroke='currentColor'
+						viewBox='0 0 24 24'
+						xmlns='http://www.w3.org/2000/svg'
+					>
+						<path
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth='2'
+							d='M14 5l7 7m0 0l-7 7m7-7H3'
+						></path>
+					</svg>
+				</button>
+			</div>
+		)
+	}
+
+	// ! Flash Sales FUnctional
+	const [currentTime, setCurrentTime] = useState(new Date())
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCurrentTime(new Date())
+		}, 1000)
+
+		return () => clearInterval(timer)
+	}, [])
+
+	const hours = currentTime.getHours()
+	const minutes = currentTime.getMinutes()
+	const seconds = currentTime.getSeconds()
+
+	const formatTime = time => {
+		return time < 10 ? `0${time}` : time
+	}
+
 	return (
 		<>
-			<section className='flex flex-col gap-[30px] md:max-w-[1400px] md:m-auto md:flex-row md:items-center'>
+			<section className='flex flex-col gap-[30px] md:max-w-[1400px] md:m-auto md:flex-row md:items-center '>
 				<aside className='p-5 md:w-[30%]'>
 					<ul className='flex flex-wrap gap-5 md:gap-2 text-[20px] md:flex-col md:items-start md:border-r-[1px] border-gray-300'>
 						{category.map(el => (
@@ -98,156 +162,208 @@ export default function Home() {
 						))}
 					</ul>
 				</aside>
+
 				<aside className=' md:w-[70%]'>
 					<Swiper
-						spaceBetween={5}
+						spaceBetween={10}
 						slidesPerView={1}
 						onSlideChange={() => console.log('slide change')}
 						onSwiper={swiper => console.log(swiper)}
+						modules={[Autoplay]}
+						autoplay={{
+							delay: 3000,
+							disableOnInteraction: false,
+						}}
+						loop={true}
+						className='h-[550px] '
 					>
-						<SwiperSlide className=''>
-							<img src={iPhone} alt='' className='w-[]' />
+						<SwiperSlide className='mt-[50px]'>
+							<img
+								src={iPhone}
+								alt='iPhone image 1'
+								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px] '
+							/>
 						</SwiperSlide>
-						<SwiperSlide>
-							<img src={iPhone} alt='' className='' />
+						<SwiperSlide className='mt-[50px] rounded-[10px]'>
+							<img
+								src={mackBook}
+								alt='iPhone image 2'
+								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px]'
+							/>
 						</SwiperSlide>
-						<SwiperSlide>
-							<img src={iPhone} alt='' className='' />
+						<SwiperSlide className='mt-[50px]'>
+							<img
+								src={pq}
+								alt='iPhone image 3'
+								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px]'
+							/>
 						</SwiperSlide>
-						<SwiperSlide>
-							<img src={iPhone} alt='' className='' />
+						<SwiperSlide className='mt-[50px]'>
+							<img
+								src={k}
+								alt='iPhone image 4'
+								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px]'
+							/>
 						</SwiperSlide>
-					</Swiper>{' '}
+					</Swiper>
 				</aside>
 			</section>
-			<div className=' w-[120px] flex justify-between items-center ml-[20px] mt-5 md:ml-[80px]'>
-				<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
-				<p className='font-bold text-[20px] text-[#DB4444]'>Today’s</p>
-			</div>
-			<div className='p-5 md:ml-[60px] md:flex-row md:flex items-end gap-[80px]'>
-				<p className='text-[40px] font-bold'>Flash Sales</p>
-				<div className='flex gap-5 items-end font-bold'>
-					<div className='font-bold'>
-						<p>Days</p>
-						<h2 className='text-[35px]'>03 </h2>
-					</div>
 
-					<div>
-						<p>Hours</p>
-						<h2 className='text-[35px]'>23</h2>
-					</div>
-					<div>
-						<p>Minutes</p>
-						<h2 className='text-[35px]'>19 </h2>
-					</div>
-					<div>
-						<p>Seconds</p>
-						<h2 className='text-[35px]'>56</h2>
+			{/* //? Time */}
+			<section className='md:max-w-[1400px] md:m-auto p-5'>
+				<div className=' w-[120px] flex justify-between items-center ml-[20px] md:mt-5 md:ml-0 mt-[-80px]'>
+					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
+					<p className='font-bold text-[20px] text-[#DB4444]'>Today’s</p>
+				</div>
+				<div className='p-5 md:p-0 md:py-3 md:ml-0 md:flex-row md:flex items-end gap-[80px]'>
+					<div className='flex gap-5 items-end font-bold'>
+						<div>
+							<p>Hours</p>
+							<h2 className='text-[35px]'>{formatTime(hours)}</h2>
+						</div>
+						<div>
+							<p>Minutes</p>
+							<h2 className='text-[35px]'>{formatTime(minutes)}</h2>
+						</div>
+						<div>
+							<p>Seconds</p>
+							<h2 className='text-[35px]'>{formatTime(seconds)}</h2>
+						</div>
 					</div>
 				</div>
-			</div>
+			</section>
+
+			{/* // ? Swiper 1 */}
 
 			<section className='hidden md:block md:max-w-[1400px] md:m-auto'>
-				<Swiper
-					spaceBetween={10}
-					slidesPerView={4}
-					onSlideChange={() => console.log('slide change')}
-					onSwiper={swiper => console.log(swiper)}
-				>
-					{product?.map(prod => (
-						<SwiperSlide key={prod.id}>
-							<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-								<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-									<div className='flex justify-between items-start'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
+				<div className='relative'>
+					<Swiper
+						spaceBetween={10}
+						slidesPerView={4}
+						onSlideChange={() => console.log('slide change')}
+						onSwiper={swiper => console.log(swiper)}
+						className='h-[550px]'
+					>
+						<SwiperNavButtons />
+
+						{product?.map(el => (
+							<SwiperSlide className='mt-10' key={el.id}>
+								<article
+									key={el.id}
+									className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+								>
+									<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+										<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+											-40%
 										</div>
-										<div className=' right-[10px] flex flex-row gap-0 top-4'>
+										<div className='absolute top-3 right-3 flex flex-row gap-2'>
 											<Button
 												color='error'
-												onClick={() => handleAddToWishlist(prod)}
-												// variant='text'
+												onClick={() => handleAddToWishlist(el)}
+												className='hover:scale-110 transition-transform'
+												sx={{
+													backgroundColor: '',
+													color: 'red',
+												}}
 											>
 												<FavoriteBorderOutlinedIcon />
 											</Button>
-
-											<Link to={'/info/' + prod.id}>
+											<Link
+												to={'/info/' + el.id}
+												className='hover:scale-110 transition-transform'
+											>
 												<RemoveRedEyeOutlinedIcon />
 											</Link>
 										</div>
+										<img
+											src={`${API}/images/${el.image}`}
+											alt=''
+											className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
+										/>
+										<Button
+											variant='outlined'
+											color='inherit'
+											onClick={() => handleAddToCart(el.id)}
+											className='hover:bg-gray-300 transition-colors'
+										>
+											Add To Cart
+										</Button>
 									</div>
-									<img
-										src={`http://37.27.29.18:8002/images/${prod.image}`}
-										alt=''
-										className='h-[150px] w-[230px] rounded-[5px]'
-									/>
-									<Button
-										variant='outlined'
-										color='inherit'
-										onClick={() => handleAddToCart(prod.id)}
-									>
-										Add To Cart
-									</Button>
-								</div>
-								<div className='flex flex-col items-start gap-3 '>
-									<h2 className='font-bold'>{prod.productName}</h2>
-									<div className='flex gap-5'>
-										<p className='text-red-800'>{`$${prod.price}`}</p>
-										<p className='line-through text-gray-500'>$160</p>
+									<div className='flex flex-col items-start gap-2'>
+										<h2 className='font-bold text-xl'>{el.productName}</h2>
+										<div className='flex gap-4 items-center'>
+											<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+											<p className='line-through text-gray-400'>$160</p>
+										</div>
+										<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 									</div>
-									<p>⭐⭐⭐⭐⭐</p>
-								</div>
-							</article>
-						</SwiperSlide>
-					))}
-				</Swiper>
+								</article>
+							</SwiperSlide>
+						))}
+					</Swiper>
+				</div>
 			</section>
 
 			<section className='p-5 md:hidden '>
 				<Swiper
 					spaceBetween={10}
-					slidesPerView={1.2}
+					slidesPerView={1.1}
 					onSlideChange={() => console.log('slide change')}
 					onSwiper={swiper => console.log(swiper)}
+					className='h-[550px]'
 				>
-					{product?.map(prod => (
-						<SwiperSlide key={prod.id}>
-							<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-								<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-									<div className='flex justify-between items-start'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
-										</div>
-										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Button onClick={() => handleAddToWishlist(prod)}>
-												<FavoriteBorderOutlinedIcon />
-											</Button>
-											<Link to={'/info/' + prod.id}>
-												<RemoveRedEyeOutlinedIcon />
-											</Link>
-										</div>
+					<SwiperNavButtons />
+
+					{product?.map(el => (
+						<SwiperSlide className='mt-10' key={el.id}>
+							<article
+								key={el.id}
+								className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+							>
+								<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+									<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+										-40%
+									</div>
+									<div className='absolute top-3 right-3 flex flex-row gap-2'>
+										<Button
+											color='error'
+											onClick={() => handleAddToWishlist(el)}
+											className='hover:scale-110 transition-transform'
+											sx={{
+												backgroundColor: '',
+												color: 'red',
+											}}
+										>
+											<FavoriteBorderOutlinedIcon />
+										</Button>
+										<Link
+											to={'/info/' + el.id}
+											className='hover:scale-110 transition-transform'
+										>
+											<RemoveRedEyeOutlinedIcon />
+										</Link>
 									</div>
 									<img
-										src={`http://37.27.29.18:8002/images/${prod.image}`}
+										src={`${API}/images/${el.image}`}
 										alt=''
-										className='h-[150px] w-[230px] rounded-[5px]'
+										className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
 									/>
-									{/* {console.log('Image', prod.image)} */}
 									<Button
 										variant='outlined'
 										color='inherit'
-										onClick={() => handleAddToCart(prod.id)}
+										onClick={() => handleAddToCart(el.id)}
+										className='hover:bg-gray-300 transition-colors'
 									>
 										Add To Cart
 									</Button>
 								</div>
-								<div className='flex flex-col items-start gap-3 '>
-									<h2 className='font-bold'>{prod.productName}</h2>
-									<div className='flex gap-5'>
-										<p className='text-red-800'>{`$${prod.price}`}</p>
-										<p className='line-through text-gray-500'>$160</p>
+								<div className='flex flex-col items-start gap-2'>
+									<h2 className='font-bold text-xl'>{el.productName}</h2>
+									<div className='flex gap-4 items-center'>
+										<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+										<p className='line-through text-gray-400'>$160</p>
 									</div>
-									<p>⭐⭐⭐⭐⭐</p>
+									<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 								</div>
 							</article>
 						</SwiperSlide>
@@ -255,11 +371,13 @@ export default function Home() {
 				</Swiper>
 			</section>
 
-			<button className='bg-[#DB4444] text-white px-10 py-4 block m-auto rounded-[5px]'>
+			<button className='bg-[#DB4444] text-white px-10 py-4 block m-auto mt-[20px] rounded-[5px]'>
 				<Link to={'/products'}>View All Products</Link>{' '}
 			</button>
 
 			<hr className='hidden md:block text-gray-300 mb-[40px] mt-[40px] md:max-w-[1400px] m-auto' />
+
+			{/* //? Swiper 2 (categoris) */}
 
 			<section className=' hidden md:block md:max-w-[1400px] m-auto md:mt-[50px]'>
 				<div className=' w-[150px] flex justify-between items-center mb-[30px]  mt-5 md:ml-[0px]'>
@@ -269,42 +387,86 @@ export default function Home() {
 				<h1 className='md:text-[30px] font-bold md:mb-[30px]'>
 					Browse By Category
 				</h1>
-				<Swiper
-					spaceBetween={50}
-					slidesPerView={6}
-					onSlideChange={() => console.log('slide change')}
-					onSwiper={swiper => console.log(swiper)}
-				>
-					{category.map(el => (
-						<SwiperSlide key={el.id}>
-							<div className='flex flex-col items-center border p-5 border-gray-300 w-[170px] h-[200px]  gap-3'>
-								<img
-									src={`http://37.27.29.18:8002/images/${el.categoryImage}`}
-									alt=''
-								/>
-								<h2>{el.categoryName}</h2>
-							</div>
-						</SwiperSlide>
-					))}
-				</Swiper>
+				<div className='relative'>
+					<Swiper
+						spaceBetween={40}
+						slidesPerView={6}
+						onSlideChange={() => console.log('slide change')}
+						onSwiper={swiper => console.log(swiper)}
+						className='h-[300px]'
+					>
+						<SwiperNavButtons />
+						{category.map(el => (
+							<SwiperSlide key={el.id} className='mt-12'>
+								<div
+									className='
+                    flex flex-col items-center p-5 w-[170px] h-[200px] gap-3
+                    rounded-xl shadow-lg border border-gray-200
+                    transform transition-all duration-300 ease-in-out
+                    hover:scale-100 hover:shadow-2xl hover:border-[#DB4444]
+                    relative overflow-hidden
+                '
+								>
+									<div className='absolute inset-0 bg-gradient-to-br from-transparent to-transparent opacity-0 hover:opacity-10 transition-opacity duration-300'></div>
+
+									<Link to={'/category/' + el.id} className='z-10'>
+										<img
+											src={`http://37.27.29.18:8002/images/${el.categoryImage}`}
+											alt={el.categoryName}
+											className='
+                            h-24 w-24 object-contain mx-auto
+                            transition-transform duration-300 ease-in-out
+                            group-hover:scale-110 // Пример: если бы родитель был group
+                        '
+										/>
+									</Link>
+									<h2 className='font-semibold text-lg text-gray-800 mt-2 z-10'>
+										{el.categoryName}
+									</h2>
+								</div>
+							</SwiperSlide>
+						))}
+					</Swiper>
+				</div>
 			</section>
 
 			<section className=' p-5 md:hidden md:max-w-[1400px] m-auto md:mt-[50px]'>
 				<h1 className='text-[25px] my-[50px] font-bold'>Browse By Category</h1>
 				<Swiper
-					spaceBetween={10}
-					slidesPerView={2.2}
+					spaceBetween={30}
+					slidesPerView={1.8}
 					onSlideChange={() => console.log('slide change')}
 					onSwiper={swiper => console.log(swiper)}
+					className='h-[300px]'
 				>
+					<SwiperNavButtons />
 					{category.map(el => (
-						<SwiperSlide key={el.id}>
-							<div className='flex flex-col items-center border p-5 border-gray-300 w-[150px]  gap-3'>
-								<img
-									src={`http://37.27.29.18:8002/images/${el.categoryImage}`}
-									alt=''
-								/>
-								<h2>{el.categoryName}</h2>
+						<SwiperSlide key={el.id} className='mt-12'>
+							<div
+								className='
+                    flex flex-col items-center p-5 w-[170px] h-[200px] gap-3
+                    rounded-xl shadow-lg border border-gray-200
+                    transform transition-all duration-300 ease-in-out
+                    hover:scale-100 hover:shadow-2xl hover:border-[#DB4444]
+                    relative overflow-hidden
+                '
+							>
+								<div className='absolute inset-0 bg-gradient-to-br from-transparent to-transparent opacity-0 hover:opacity-10 transition-opacity duration-300'></div>
+
+								<Link to={'/category/' + el.id} className='z-10'>
+									<img
+										src={`http://37.27.29.18:8002/images/${el.categoryImage}`}
+										alt={el.categoryName}
+										className='
+                            h-24 w-24 object-contain mx-auto
+                            transition-transform duration-300 ease-in-out
+                            group-hover:scale-110 // Пример: если бы родитель был group
+                        '
+									/>
+								</Link>
+								<h2 className='font-semibold text-lg text-gray-800 mt-2 z-10'>
+									{el.categoryName}
+								</h2>
 							</div>
 						</SwiperSlide>
 					))}
@@ -312,6 +474,8 @@ export default function Home() {
 			</section>
 
 			<hr className='hidden md:block text-gray-300 mb-[40px] mt-[40px] md:max-w-[1400px] m-auto' />
+
+			{/* //? Swipper 3 */}
 
 			<section className=' hidden md:block md:max-w-[1400px] md:m-auto'>
 				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
@@ -321,108 +485,142 @@ export default function Home() {
 				<div className='md:flex md:justify-between md:items-center md:mb-[40px] '>
 					<h1 className='text-[35px] font-bold'>Best Selling Products</h1>
 				</div>
-				<Swiper
-					spaceBetween={10}
-					slidesPerView={4}
-					onSlideChange={() => console.log('slide change')}
-					onSwiper={swiper => console.log(swiper)}
-				>
-					{product?.map(prod => (
-						<SwiperSlide key={prod.id}>
-							<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-								<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-									<div className='flex justify-between items-start'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
+
+				<div className='relative'>
+					<Swiper
+						spaceBetween={10}
+						slidesPerView={4}
+						onSlideChange={() => console.log('slide change')}
+						onSwiper={swiper => console.log(swiper)}
+						className='h-[550px]'
+					>
+						<SwiperNavButtons />
+
+						{product?.map(el => (
+							<SwiperSlide className='mt-10' key={el.id}>
+								<article
+									key={el.id}
+									className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+								>
+									<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+										<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+											-40%
 										</div>
-										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Button onClick={() => handleAddToWishlist(prod)}>
+										<div className='absolute top-3 right-3 flex flex-row gap-2'>
+											<Button
+												color='error'
+												onClick={() => handleAddToWishlist(el)}
+												className='hover:scale-110 transition-transform'
+												sx={{
+													backgroundColor: '',
+													color: 'red',
+												}}
+											>
 												<FavoriteBorderOutlinedIcon />
 											</Button>
-											<Link to={'/info/' + prod.id}>
+											<Link
+												to={'/info/' + el.id}
+												className='hover:scale-110 transition-transform'
+											>
 												<RemoveRedEyeOutlinedIcon />
 											</Link>
 										</div>
+										<img
+											src={`${API}/images/${el.image}`}
+											alt=''
+											className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
+										/>
+										<Button
+											variant='outlined'
+											color='inherit'
+											onClick={() => handleAddToCart(el.id)}
+											className='hover:bg-gray-300 transition-colors'
+										>
+											Add To Cart
+										</Button>
 									</div>
-									<img
-										src={`http://37.27.29.18:8002/images/${prod.image}`}
-										alt=''
-										className='h-[150px] w-[230px] rounded-[5px]'
-									/>
-									<Button
-										variant='outlined'
-										color='inherit'
-										onClick={() => handleAddToCart(prod.id)}
-									>
-										Add To Cart
-									</Button>
-								</div>
-								<div className='flex flex-col items-start gap-3 '>
-									<h2 className='font-bold'>{prod.productName}</h2>
-									<div className='flex gap-5'>
-										<p className='text-red-800'>{`$${prod.price}`}</p>
-										<p className='line-through text-gray-500'>$160</p>
+									<div className='flex flex-col items-start gap-2'>
+										<h2 className='font-bold text-xl'>{el.productName}</h2>
+										<div className='flex gap-4 items-center'>
+											<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+											<p className='line-through text-gray-400'>$160</p>
+										</div>
+										<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 									</div>
-									<p>⭐⭐⭐⭐⭐</p>
-								</div>
-							</article>
-						</SwiperSlide>
-					))}
-				</Swiper>
+								</article>
+							</SwiperSlide>
+						))}
+					</Swiper>
+				</div>
 			</section>
 
-			<section className='p-5 md:hidden '>
+			<section className='p-5 md:hidden  '>
 				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
 					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
 					<p className='font-bold text-[20px] text-[#DB4444]'>This Month</p>
 				</div>
-				<div className='md:flex md:justify-between md:items-center md:mb-[40px] '>
+				<div className='md:flex md:justify-between md:items-center md:mb-[40px] mb-10 '>
 					<h1 className='text-[35px] font-bold'>Best Selling Products</h1>
 				</div>
 				<Swiper
 					spaceBetween={10}
-					slidesPerView={1.2}
+					slidesPerView={1.1}
 					onSlideChange={() => console.log('slide change')}
 					onSwiper={swiper => console.log(swiper)}
+					className='h-[550px]'
 				>
-					{product?.map(prod => (
-						<SwiperSlide key={prod.id}>
-							<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-								<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-									<div className='flex justify-between items-start'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
-										</div>
-										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Button onClick={() => handleAddToWishlist(prod)}>
-												<FavoriteBorderOutlinedIcon />
-											</Button>
-											<Link to={'/info/' + prod.id}>
-												<RemoveRedEyeOutlinedIcon />
-											</Link>
-										</div>
+					<SwiperNavButtons />
+
+					{product?.map(el => (
+						<SwiperSlide className='mt-10' key={el.id}>
+							<article
+								key={el.id}
+								className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+							>
+								<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+									<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+										-40%
+									</div>
+									<div className='absolute top-3 right-3 flex flex-row gap-2'>
+										<Button
+											color='error'
+											onClick={() => handleAddToWishlist(el)}
+											className='hover:scale-110 transition-transform'
+											sx={{
+												backgroundColor: '',
+												color: 'red',
+											}}
+										>
+											<FavoriteBorderOutlinedIcon />
+										</Button>
+										<Link
+											to={'/info/' + el.id}
+											className='hover:scale-110 transition-transform'
+										>
+											<RemoveRedEyeOutlinedIcon />
+										</Link>
 									</div>
 									<img
-										src={`http://37.27.29.18:8002/images/${prod.image}`}
+										src={`${API}/images/${el.image}`}
 										alt=''
-										className='h-[150px] w-[230px] rounded-[5px]'
+										className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
 									/>
-									{/* {console.log('Image', prod.image)} */}
 									<Button
 										variant='outlined'
 										color='inherit'
-										onClick={() => handleAddToCart(prod.id)}
+										onClick={() => handleAddToCart(el.id)}
+										className='hover:bg-gray-300 transition-colors'
 									>
 										Add To Cart
 									</Button>
 								</div>
-								<div className='flex flex-col items-start gap-3 '>
-									<h2 className='font-bold'>{prod.productName}</h2>
-									<div className='flex gap-5'>
-										<p className='text-red-800'>{`$${prod.price}`}</p>
-										<p className='line-through text-gray-500'>$160</p>
+								<div className='flex flex-col items-start gap-2'>
+									<h2 className='font-bold text-xl'>{el.productName}</h2>
+									<div className='flex gap-4 items-center'>
+										<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+										<p className='line-through text-gray-400'>$160</p>
 									</div>
-									<p>⭐⭐⭐⭐⭐</p>
+									<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 								</div>
 							</article>
 						</SwiperSlide>
@@ -430,7 +628,9 @@ export default function Home() {
 				</Swiper>
 			</section>
 
-			<section className=' p-5 md:p-5 md:max-w-[1400px] md:m-auto bg-black text-white flex-col flex md:flex-row md:justify-between'>
+			{/* //? Section (Kalonka JBL) */}
+
+			<section className=' p-5 md:p-5 md:max-w-[1400px] md:m-auto bg-black text-white flex-col flex md:flex-row md:justify-between md:mt-[100px] mt-10 mb-10 md:mb-[100px]'>
 				<aside className='md:w-[40%] flex flex-col md:flex-col gap-7 items-start'>
 					<p className='text-[#00FF66]'>Categories</p>
 					<h1 className='text-[40px] font-bold md:text-[50px]'>
@@ -452,6 +652,7 @@ export default function Home() {
 				<img src={jbl} alt='' />
 			</section>
 
+			{/* //? Swipper 4 (our product) */}
 			<section className=' hidden md:block md:max-w-[1400px] md:m-auto'>
 				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
 					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
@@ -463,115 +664,138 @@ export default function Home() {
 					</h1>
 				</div>
 
-				<div className='grid columns-4 grid-cols-4'>
-					{product?.map(prod => (
+				<div className='grid columns-4 grid-cols-4 gap-10'>
+					{product?.map(el => (
 						<article
-							key={prod.id}
-							className=' p-5 w-[300px]  flex flex-col gap-5'
+							key={el.id}
+							className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
 						>
-							<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-								<div className='flex justify-between items-start'>
-									<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-										<p>-40%</p>
-									</div>
-									<div className=' right-[10px] flex flex-row gap-5 top-4'>
-										<Button onClick={() => handleAddToWishlist(prod)}>
-											<FavoriteBorderOutlinedIcon />
-										</Button>
-										<Link to={'/info/' + prod.id}>
-											<RemoveRedEyeOutlinedIcon />
-										</Link>
-									</div>
+							<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+								<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+									-40%
+								</div>
+								<div className='absolute top-3 right-3 flex flex-row gap-2'>
+									<Button
+										color='error'
+										onClick={() => handleAddToWishlist(el)}
+										className='hover:scale-110 transition-transform'
+										sx={{
+											backgroundColor: '',
+											color: 'red',
+										}}
+									>
+										<FavoriteBorderOutlinedIcon />
+									</Button>
+									<Link
+										to={'/info/' + el.id}
+										className='hover:scale-110 transition-transform'
+									>
+										<RemoveRedEyeOutlinedIcon />
+									</Link>
 								</div>
 								<img
-									src={`http://37.27.29.18:8002/images/${prod.image}`}
+									src={`${API}/images/${el.image}`}
 									alt=''
-									className='h-[150px] w-[230px] rounded-[5px]'
+									className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
 								/>
-								{/* {console.log('Image', prod.image)} */}
-
 								<Button
 									variant='outlined'
 									color='inherit'
-									onClick={() => handleAddToCart(prod.id)}
+									onClick={() => handleAddToCart(el.id)}
+									className='hover:bg-gray-300 transition-colors'
 								>
 									Add To Cart
 								</Button>
 							</div>
-							<div className='flex flex-col items-start gap-3 '>
-								<h2 className='font-bold'>{prod.productName}</h2>
-								<div className='flex gap-5'>
-									<p className='text-red-800'>{`$${prod.price}`}</p>
-									<p className='line-through text-gray-500'>$160</p>
+							<div className='flex flex-col items-start gap-2'>
+								<h2 className='font-bold text-xl'>{el.productName}</h2>
+								<div className='flex gap-4 items-center'>
+									<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+									<p className='line-through text-gray-400'>$160</p>
 								</div>
-								<p>⭐⭐⭐⭐⭐</p>
+								<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 							</div>
 						</article>
 					))}
 				</div>
 			</section>
-			{/* //////////////////////////////////////////////////////////////////////////////////? */}
 
 			<section className=' p-5 md:hidden md:max-w-[1400px] md:m-auto'>
 				<div className=' w-[150px] flex justify-between items-center ml-[0px] mt-5 mb-[30px] md:ml-[0px]'>
 					<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
 					<p className='font-bold text-[20px] text-[#DB4444]'>Our Products</p>
 				</div>
-				<div className='md:flex md:justify-between md:items-center md:mb-[40px] '>
+				<div className='md:flex md:justify-between md:items-center md:mb-[40px] mb-10 '>
 					<h1 className='text-[35px] font-bold'>Explore Our Products</h1>
 				</div>
 
 				<Swiper
 					spaceBetween={10}
-					slidesPerView={1.2}
+					slidesPerView={1.1}
 					onSlideChange={() => console.log('slide change')}
 					onSwiper={swiper => console.log(swiper)}
+					className='h-[550px]'
 				>
-					{product?.map(prod => (
-						<SwiperSlide key={prod.id}>
-							<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-								<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-									<div className='flex justify-between items-start'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
-										</div>
-										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Button onClick={() => handleAddToWishlist(prod)}>
-												<FavoriteBorderOutlinedIcon />
-											</Button>
-											<Link to={'/info/' + prod.id}>
-												<RemoveRedEyeOutlinedIcon />
-											</Link>
-										</div>
+					<SwiperNavButtons />
+
+					{product?.map(el => (
+						<SwiperSlide className='mt-10' key={el.id}>
+							<article
+								key={el.id}
+								className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+							>
+								<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+									<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+										-40%
+									</div>
+									<div className='absolute top-3 right-3 flex flex-row gap-2'>
+										<Button
+											color='error'
+											onClick={() => handleAddToWishlist(el)}
+											className='hover:scale-110 transition-transform'
+											sx={{
+												backgroundColor: '',
+												color: 'red',
+											}}
+										>
+											<FavoriteBorderOutlinedIcon />
+										</Button>
+										<Link
+											to={'/info/' + el.id}
+											className='hover:scale-110 transition-transform'
+										>
+											<RemoveRedEyeOutlinedIcon />
+										</Link>
 									</div>
 									<img
-										src={`http://37.27.29.18:8002/images/${prod.image}`}
+										src={`${API}/images/${el.image}`}
 										alt=''
-										className='h-[150px] w-[230px] rounded-[5px]'
+										className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
 									/>
-									{/* {console.log('Image', prod.image)} */}
 									<Button
 										variant='outlined'
 										color='inherit'
-										onClick={() => handleAddToCart(prod.id)}
+										onClick={() => handleAddToCart(el.id)}
+										className='hover:bg-gray-300 transition-colors'
 									>
 										Add To Cart
 									</Button>
 								</div>
-								<div className='flex flex-col items-start gap-3 '>
-									<h2 className='font-bold'>{prod.productName}</h2>
-									<div className='flex gap-5'>
-										<p className='text-red-800'>{`$${prod.price}`}</p>
-										<p className='line-through text-gray-500'>$160</p>
+								<div className='flex flex-col items-start gap-2'>
+									<h2 className='font-bold text-xl'>{el.productName}</h2>
+									<div className='flex gap-4 items-center'>
+										<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+										<p className='line-through text-gray-400'>$160</p>
 									</div>
-									<p>⭐⭐⭐⭐⭐</p>
+									<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 								</div>
 							</article>
 						</SwiperSlide>
 					))}
 				</Swiper>
 			</section>
-			<button className='bg-[#DB4444] text-white px-10 py-4 block m-auto'>
+
+			<button className='bg-[#DB4444] text-white px-10 py-4 block m-auto mt-[50px]'>
 				<Link to={'/products'}>View All Products</Link>{' '}
 			</button>
 
@@ -616,17 +840,4 @@ export default function Home() {
 			<Toaster position='top-right' richColors />
 		</>
 	)
-}
-
-{
-	/* <Swiper
-	spaceBetween={50}
-	slidesPerView={3}
-	onSlideChange={() => console.log('slide change')}
-	onSwiper={swiper => console.log(swiper)}
->
-	<SwiperSlide>
-		<img src={img} alt='' />
-	</SwiperSlide>
-</Swiper> */
 }

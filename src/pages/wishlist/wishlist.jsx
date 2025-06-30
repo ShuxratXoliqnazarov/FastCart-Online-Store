@@ -1,4 +1,3 @@
-import kalonka from '@/assets/kalonka.png'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 
 import { Button } from '@mui/material'
@@ -6,11 +5,11 @@ import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import { useEffect, useState } from 'react'
 import { useCartStore } from '../../stores/cartStore'
-import { Toaster } from 'sonner'
-// import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
+import { toast, Toaster } from 'sonner'
+
 import { Link, useNavigate } from 'react-router-dom'
 import { useMainStore } from '../../stores/mainStore'
+import { API } from '../../utils/config'
 
 let products = JSON.parse(localStorage.getItem('wish'))
 
@@ -29,6 +28,7 @@ export default function Wishlist() {
 		const deleted = wishlist.filter(el => el.id != id)
 		localStorage.setItem('wish', JSON.stringify(deleted))
 		setWishlist(deleted)
+		toast.arguments('Deleted form wishlist❗')
 	}
 
 	const navigate = useNavigate()
@@ -43,104 +43,193 @@ export default function Wishlist() {
 
 		addToCart(id)
 	}
+
+	const SwiperNavButtons = () => {
+		const swiper = useSwiper() // Получаем экземпляр Swiper
+
+		return (
+			<div className='absolute top-[-20px] right-0 z-10 flex gap-2 mt-4 mr-4'>
+				{' '}
+				{/* Расположение кнопок */}
+				<button
+					className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
+					onClick={() => swiper.slidePrev()}
+				>
+					<svg
+						className='w-5 h-5 text-gray-700'
+						fill='none'
+						stroke='currentColor'
+						viewBox='0 0 24 24'
+						xmlns='http://www.w3.org/2000/svg'
+					>
+						<path
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth='2'
+							d='M10 19l-7-7m0 0l7-7m-7 7h18'
+						></path>
+					</svg>
+				</button>
+				<button
+					className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
+					onClick={() => swiper.slideNext()}
+				>
+					<svg
+						className='w-5 h-5 text-gray-700'
+						fill='none'
+						stroke='currentColor'
+						viewBox='0 0 24 24'
+						xmlns='http://www.w3.org/2000/svg'
+					>
+						<path
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth='2'
+							d='M14 5l7 7m0 0l-7 7m7-7H3'
+						></path>
+					</svg>
+				</button>
+			</div>
+		)
+	}
 	return (
 		<>
 			<section className='md:max-w-[1400px] md:m-auto p-5'>
-				<div className='flex justify-between items-center'>
+				<div className='flex justify-between items-center md:my-5 my-10'>
 					<h2>Wishlist {wishlist.length}</h2>
 					<Button color='inherit' variant='outlined'>
 						Move All To Bag
 					</Button>
 				</div>
 				<div className='hidden md:block'>
-					<Swiper
-						spaceBetween={10}
-						slidesPerView={4}
-						onSlideChange={() => console.log('slide change')}
-						onSwiper={swiper => console.log(swiper)}
-					>
-						{products?.map(el => (
-							<SwiperSlide key={el.id}>
-								<article className=' p-5 w-[300px] relative flex flex-col gap-5'>
-									<div className='bg-[#F5F5F5] relative p-5 flex flex-col pb-0 rounded-[10px]'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
-										</div>
-										<div className='absolute right-[10px] flex flex-col gap-5 top-4 '>
+					<div className='relative'>
+						<Swiper
+							spaceBetween={10}
+							slidesPerView={4}
+							onSlideChange={() => console.log('slide change')}
+							onSwiper={swiper => console.log(swiper)}
+							className='h-[550px]'
+						>
+							<SwiperNavButtons />
+
+							{products?.map(el => (
+								<SwiperSlide className='mt-10' key={el.id}>
+									<article
+										key={el.id}
+										className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+									>
+										<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+											<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+												-40%
+											</div>
+											<div className='absolute top-3 right-3 flex flex-row gap-2'>
+												<Button
+													color='error'
+													onClick={() => deleteFromWishlist(el.id)}
+													className='hover:scale-110 transition-transform'
+													sx={{
+														backgroundColor: '',
+														color: 'red',
+													}}
+												>
+													<DeleteOutlineOutlinedIcon />
+												</Button>
+												<Link
+													to={'/info/' + el.id}
+													className='hover:scale-110 transition-transform'
+												>
+													<RemoveRedEyeOutlinedIcon />
+												</Link>
+											</div>
+											<img
+												src={`${API}/images/${el.image}`}
+												alt=''
+												className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
+											/>
 											<Button
-												variant='text'
-												color='error'
-												onClick={() => deleteFromWishlist(el.id)}
+												variant='outlined'
+												color='inherit'
+												onClick={() => handleAddToCart(el.id)}
+												className='hover:bg-gray-300 transition-colors'
 											>
-												<DeleteOutlineOutlinedIcon />
+												Add To Cart
 											</Button>
 										</div>
-										<img
-											src={`http://37.27.29.18:8002/images/${el.image}`}
-											alt=''
-											className='h-[170px]'
-										/>
-										<Button variant='outlined' color='inherit'>
-											Add To Cart
-										</Button>
-									</div>
-									<div className='flex flex-col items-start gap-3 '>
-										<h2 className='font-bold'>{el.productName}</h2>
-										<div className='flex gap-5'>
-											<p className='text-red-800'>{`${el.price}  tjs`}</p>
-											<p className='line-through text-gray-500'>$160</p>
+										<div className='flex flex-col items-start gap-2'>
+											<h2 className='font-bold text-xl'>{el.productName}</h2>
+											<div className='flex gap-4 items-center'>
+												<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+												<p className='line-through text-gray-400'>$160</p>
+											</div>
+											<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 										</div>
-										<p>⭐⭐⭐⭐⭐</p>
-									</div>
-								</article>
-							</SwiperSlide>
-						))}
-					</Swiper>
+									</article>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
 				</div>
 
 				<div className='md:hidden '>
 					<Swiper
 						spaceBetween={10}
-						slidesPerView={1.2}
+						slidesPerView={1.1}
 						onSlideChange={() => console.log('slide change')}
 						onSwiper={swiper => console.log(swiper)}
+						className='h-[550px]'
 					>
+						<SwiperNavButtons />
+
 						{products?.map(el => (
-							<SwiperSlide key={el.id}>
-								<article className=' p-5 w-[300px] relative flex flex-col gap-5'>
-									<div className='bg-[#F5F5F5] relative p-5 flex flex-col pb-0 rounded-[10px]'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
+							<SwiperSlide className='mt-10' key={el.id}>
+								<article
+									key={el.id}
+									className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+								>
+									<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+										<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+											-40%
 										</div>
-										<div className='absolute right-[10px] flex flex-col gap-5 top-4 '>
+										<div className='absolute top-3 right-3 flex flex-row gap-2'>
 											<Button
-												variant='text'
 												color='error'
 												onClick={() => deleteFromWishlist(el.id)}
+												className='hover:scale-110 transition-transform'
+												sx={{
+													backgroundColor: '',
+													color: 'red',
+												}}
 											>
 												<DeleteOutlineOutlinedIcon />
 											</Button>
+											<Link
+												to={'/info/' + el.id}
+												className='hover:scale-110 transition-transform'
+											>
+												<RemoveRedEyeOutlinedIcon />
+											</Link>
 										</div>
 										<img
-											src={`http://37.27.29.18:8002/images/${el.image}`}
+											src={`${API}/images/${el.image}`}
 											alt=''
-											className='h-[170px]'
+											className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
 										/>
 										<Button
 											variant='outlined'
 											color='inherit'
 											onClick={() => handleAddToCart(el.id)}
+											className='hover:bg-gray-300 transition-colors'
 										>
 											Add To Cart
 										</Button>
 									</div>
-									<div className='flex flex-col items-start gap-3 '>
-										<h2 className='font-bold'>{el.productName}</h2>
-										<div className='flex gap-5'>
-											<p className='text-red-800'>{`${el.price}  tjs`}</p>
-											<p className='line-through text-gray-500'>$160</p>
+									<div className='flex flex-col items-start gap-2'>
+										<h2 className='font-bold text-xl'>{el.productName}</h2>
+										<div className='flex gap-4 items-center'>
+											<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+											<p className='line-through text-gray-400'>$160</p>
 										</div>
-										<p>⭐⭐⭐⭐⭐</p>
+										<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 									</div>
 								</article>
 							</SwiperSlide>
@@ -161,100 +250,118 @@ export default function Wishlist() {
 				</div>
 
 				<div className='hidden md:block'>
-					<Swiper
-						spaceBetween={10}
-						slidesPerView={4}
-						onSlideChange={() => console.log('slide change')}
-						onSwiper={swiper => console.log(swiper)}
-					>
-						{product?.map(prod => (
-							<SwiperSlide key={prod.id}>
-								<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-									<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-										<div className='flex justify-between items-start'>
-											<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-												<p>-40%</p>
+					<div className='relative'>
+						<Swiper
+							spaceBetween={10}
+							slidesPerView={4}
+							onSlideChange={() => console.log('slide change')}
+							onSwiper={swiper => console.log(swiper)}
+							className='h-[550px]'
+						>
+							<SwiperNavButtons />
+
+							{product?.map(el => (
+								<SwiperSlide className='mt-10' key={el.id}>
+									<article
+										key={el.id}
+										className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
+									>
+										<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+											<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+												-40%
 											</div>
-											<div className=' right-[10px] flex flex-row gap-5 top-4'>
-												<Link to={'/info/' + prod.id}>
+											<div className='absolute top-3 right-3 flex flex-row gap-2'>
+												<Link
+													to={'/info/' + el.id}
+													className='hover:scale-110 transition-transform'
+												>
 													<RemoveRedEyeOutlinedIcon />
 												</Link>
 											</div>
+											<img
+												src={`${API}/images/${el.image}`}
+												alt=''
+												className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
+											/>
+											<Button
+												variant='outlined'
+												color='inherit'
+												onClick={() => handleAddToCart(el.id)}
+												className='hover:bg-gray-300 transition-colors'
+											>
+												Add To Cart
+											</Button>
 										</div>
-										<img
-											src={`http://37.27.29.18:8002/images/${prod.image}`}
-											alt=''
-											className='h-[150px] w-[230px] rounded-[5px]'
-										/>
-										<Button
-											variant='outlined'
-											color='inherit'
-											onClick={() => handleAddToCart(prod.id)}
-										>
-											Add To Cart
-										</Button>
-									</div>
-									<div className='flex flex-col items-start gap-3 '>
-										<h2 className='font-bold'>{prod.productName}</h2>
-										<div className='flex gap-5'>
-											<p className='text-red-800'>{`$${prod.price}`}</p>
-											<p className='line-through text-gray-500'>$160</p>
+										<div className='flex flex-col items-start gap-2'>
+											<h2 className='font-bold text-xl'>{el.productName}</h2>
+											<div className='flex gap-4 items-center'>
+												<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+												<p className='line-through text-gray-400'>$160</p>
+											</div>
+											<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 										</div>
-										<p>⭐⭐⭐⭐⭐</p>
-									</div>
-								</article>
-							</SwiperSlide>
-						))}
-					</Swiper>
+									</article>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
 				</div>
 			</section>
 
 			<section className='p-5 md:hidden '>
 				<Swiper
-					spaceBetween={10}
-					slidesPerView={1.2}
-					onSlideChange={() => console.log('slide change')}
-					onSwiper={swiper => console.log(swiper)}
-				>
-					{product?.map(prod => (
-						<SwiperSlide key={prod.id}>
-							<article className=' p-5 w-[300px]  flex flex-col gap-5'>
-								<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-									<div className='flex justify-between items-start'>
-										<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-											<p>-40%</p>
-										</div>
-										<div className=' right-[10px] flex flex-row gap-5 top-4'>
-											<Link to={'/info/' + prod.id}>
-												<RemoveRedEyeOutlinedIcon />
-											</Link>
-										</div>
-									</div>
-									<img
-										src={`http://37.27.29.18:8002/images/${prod.image}`}
-										alt=''
-										className='h-[150px] w-[230px] rounded-[5px]'
-									/>
-									<Button
-										variant='outlined'
-										color='inherit'
-										onClick={() => handleAddToCart(prod.id)}
+							spaceBetween={10}
+							slidesPerView={1.1}
+							onSlideChange={() => console.log('slide change')}
+							onSwiper={swiper => console.log(swiper)}
+							className='h-[550px]'
+						>
+							<SwiperNavButtons />
+
+							{product?.map(el => (
+								<SwiperSlide className='mt-10' key={el.id}>
+									<article
+										key={el.id}
+										className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
 									>
-										Add To Cart
-									</Button>
-								</div>
-								<div className='flex flex-col items-start gap-3 '>
-									<h2 className='font-bold'>{prod.productName}</h2>
-									<div className='flex gap-5'>
-										<p className='text-red-800'>{`$${prod.price}`}</p>
-										<p className='line-through text-gray-500'>$160</p>
-									</div>
-									<p>⭐⭐⭐⭐⭐</p>
-								</div>
-							</article>
-						</SwiperSlide>
-					))}
-				</Swiper>
+										<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+											<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+												-40%
+											</div>
+											<div className='absolute top-3 right-3 flex flex-row gap-2'>
+												<Link
+													to={'/info/' + el.id}
+													className='hover:scale-110 transition-transform'
+												>
+													<RemoveRedEyeOutlinedIcon />
+												</Link>
+											</div>
+											<img
+												src={`${API}/images/${el.image}`}
+												alt=''
+												className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
+											/>
+											<Button
+												variant='outlined'
+												color='inherit'
+												onClick={() => handleAddToCart(el.id)}
+												className='hover:bg-gray-300 transition-colors'
+											>
+												Add To Cart
+											</Button>
+										</div>
+										<div className='flex flex-col items-start gap-2'>
+											<h2 className='font-bold text-xl'>{el.productName}</h2>
+											<div className='flex gap-4 items-center'>
+												<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+												<p className='line-through text-gray-400'>$160</p>
+											</div>
+											<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
+										</div>
+									</article>
+								</SwiperSlide>
+							))}
+						</Swiper>
 			</section>
 			<Toaster position='top-right' richColors />
 		</>

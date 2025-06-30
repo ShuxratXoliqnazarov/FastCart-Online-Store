@@ -54,7 +54,7 @@ export default function Products() {
 		brandFiltre,
 		priceFiltre,
 	} = useFilterStore()
-	
+
 	const { addToCart } = useCartStore()
 	useEffect(() => {
 		getCategory()
@@ -101,7 +101,16 @@ export default function Products() {
 	return (
 		<>
 			<section className='p-5 items-center flex-col md:max-w-[1400px] md:m-auto flex md:flex-row md:justify-between md:items-start '>
-				<aside className='hidden md:block w-[25%]'>
+				<aside className='md:w-[25%] flex flex-col'>
+					<div className='md:hidden w-[100%] my-5'>
+						<TextField
+							id='outlined-basic'
+							label='Search'
+							variant='outlined'
+							sx={{width:'100%'}}
+						/>
+					</div>
+
 					<Accordion>
 						<AccordionSummary
 							expandIcon={<ExpandMoreIcon />}
@@ -280,7 +289,7 @@ export default function Products() {
 						</AccordionDetails>
 					</Accordion>
 				</aside>
-				<div className='md:hidden w-[100%] flex items-center flex-col gap-5 '>
+				{/* <div className='md:hidden w-[100%] flex items-center flex-col gap-5 '>
 					<TextField
 						id='outlined-basic'
 						label='Search'
@@ -296,46 +305,58 @@ export default function Products() {
 							Filter (3)
 						</Button>
 					</div>
-				</div>
+				</div> */}
 
-				<aside className='w-[100%] items-center  flex flex-col md:flex-row md:flex-wrap md:gap-5 md:w-[70%]'>
-					{product.map(el => (
+				<aside className='w-[100%] items-center  flex flex-col md:flex-row md:flex-wrap md:gap-6 gap-12 mt-10 md:w-[70%]'>
+					{product?.map(el => (
 						<article
 							key={el.id}
-							className=' p-5 w-[300px] relative flex flex-col gap-5'
+							className='relative flex flex-col gap-5 p-5 w-[300px] bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300'
 						>
-							<div className='bg-[#F5F5F5] relative gap-3 p-5 flex flex-col pb-0 rounded-[10px]'>
-								<div className='bg-[#DB4444] text-white w-13 px-2 rounded-[5px] py-0'>
-									<p>-40%</p>
+							<div className='relative flex flex-col gap-5 p-10 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors'>
+								<div className='absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold'>
+									-40%
 								</div>
-								<div className=' right-[10px] flex flex-row gap-0 top-4'>
-									<Button color='error' onClick={() => handleAddToWishlist(el)}>
+								<div className='absolute top-3 right-3 flex flex-row gap-2'>
+									<Button
+										color='error'
+										onClick={() => handleAddToWishlist(el)}
+										className='hover:scale-110 transition-transform'
+										sx={{
+											backgroundColor: '',
+											color: 'red',
+										}}
+									>
 										<FavoriteBorderOutlinedIcon />
 									</Button>
-									<Link to={'/info/' + el.id}>
+									<Link
+										to={'/info/' + el.id}
+										className='hover:scale-110 transition-transform'
+									>
 										<RemoveRedEyeOutlinedIcon />
 									</Link>
 								</div>
 								<img
 									src={`${API}/images/${el.image}`}
 									alt=''
-									className='h-[170px] w-[200px]'
+									className='h-[180px] w-[220px] object-contain mx-auto rounded-xl'
 								/>
 								<Button
 									variant='outlined'
 									color='inherit'
 									onClick={() => handleAddToCart(el.id)}
+									className='hover:bg-gray-300 transition-colors'
 								>
 									Add To Cart
 								</Button>
 							</div>
-							<div className='flex flex-col items-start gap-3 '>
-								<h2 className='font-bold'>{el.productName}</h2>
-								<div className='flex gap-5'>
-									<p className='text-red-800'>{`${el.price} tjs`}</p>
-									<p className='line-through text-gray-500'>$160</p>
+							<div className='flex flex-col items-start gap-2'>
+								<h2 className='font-bold text-xl'>{el.productName}</h2>
+								<div className='flex gap-4 items-center'>
+									<p className='text-red-600 text-lg font-semibold'>{`${el.price} tjs`}</p>
+									<p className='line-through text-gray-400'>$160</p>
 								</div>
-								<p>⭐⭐⭐⭐⭐</p>
+								<div className='text-yellow-400 text-lg'>⭐⭐⭐⭐⭐</div>
 							</div>
 						</article>
 					))}
@@ -348,6 +369,7 @@ export default function Products() {
 					margin: 'auto',
 					color: 'white',
 					padding: '10px 20px',
+					marginTop: '50px',
 				}}
 			>
 				More Products

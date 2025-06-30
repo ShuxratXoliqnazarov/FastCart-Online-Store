@@ -25,7 +25,6 @@ export const useRegisterStore = create((set, get) => ({
 			set({ isLoading: true, wrong: null })
 			let response = await axiosStandart.post('/Account/login', user)
 			set({ isLoading: false })
-			// localStorage.setItem('token', response.data.data)
 			saveToken(response.data.data)
 			return { success: true, data: response.data.data }
 		} catch (error) {
