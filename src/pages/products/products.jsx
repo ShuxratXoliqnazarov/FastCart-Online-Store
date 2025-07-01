@@ -18,6 +18,8 @@ import { useMainStore } from '../../stores/mainStore'
 import { useCartStore } from '../../stores/cartStore'
 import { toast, Toaster } from 'sonner'
 import { useWishlistStore } from '../../stores/wishlistStore'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+
 
 export default function Products() {
 	const {
@@ -92,7 +94,9 @@ export default function Products() {
 	// ! Wishlist functions
 	const addItemToWishlist = useWishlistStore(state => state.addItem)
 	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
-	const isInWishlist = useWishlistStore(state => state.isInWishlist)
+	// const isInWishlist = useWishlistStore(state => state.isInWishlist)
+	const wishlistItems = useWishlistStore(state => state.items)
+	const isInWishlist = id => wishlistItems.some(item => item.id === id)
 
 	function handleToggleWishlist(prod) {
 		if (!localStorage.getItem('token')) {

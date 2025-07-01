@@ -2,8 +2,35 @@ import { Button, TextField } from '@mui/material'
 import banks from '@/assets/banks.png'
 
 import jst from '@/assets/jst.png'
+import { useCartStore } from '../../stores/cartStore'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
+import { removeToken } from '../../utils/token'
 
 export default function CheckOut() {
+	const {
+		getProduct,
+		data,
+		totalPrice,
+		totalProducts,
+		delFromCart,
+		clearCart,
+	} = useCartStore()
+
+	useEffect(() => {
+		getProduct()
+	}, [])
+
+	const navigate = useNavigate()
+
+	function check() {
+		navigate('/')
+		toast.info('Thank you for using our store 😊')
+		clearCart()
+		localStorage.removeItem('wish')
+	}
+
 	return (
 		<>
 			<section className='md:max-w-[1400px] p-5 md:p-0 md:m-auto gap-10 md:gap-0 md:flex md:justify-between items-end md:mb-[200px] md:mt-[100px]'>
@@ -49,24 +76,30 @@ export default function CheckOut() {
 				</aside>
 
 				<aside className=' mt-[50px] md:mt-0 md:w-[50%] text-[20px] flex flex-col gap-5'>
-					<div className='flex justify-between items-center'>
-						<div className='flex items-center gap-5'>
-							<img src={jst} alt='' className='h-[60px]' />
-							<h3 className='text-[25px]'>LCD Monitor</h3>
+					{data?.map(el => (
+						<div key={el.id} className='flex justify-between items-center'>
+							<div className='flex items-center gap-5'>
+								<img
+									src={`http://37.27.29.18:8002/images/${el.image}`}
+									alt=''
+									className='h-[60px]'
+								/>
+								<h3 className='text-[25px]'>{el.productName}</h3>
+							</div>
+							<p>{el.price} tjs</p>
 						</div>
-						<p>$650</p>
-					</div>
-					<div className='flex justify-between items-center'>
+					))}
+					{/* <div className='flex justify-between items-center'>
 						<div className='flex items-center gap-5'>
 							<img src={jst} alt='' className='h-[60px]' />
 							<h3 className='text-[25px]'>H1 Gamepad $1100</h3>
 						</div>
 						<p>$1100</p>
-					</div>
+					</div> */}
 
 					<div className='flex justify-between items-center border-t mt-[50px] pt-[40px]'>
 						<h3>Subtotal:</h3>
-						<p>$1750</p>
+						<p>{totalPrice} tjs</p>
 					</div>
 					<div className='flex justify-between items-center'>
 						<h3>Total:</h3>
@@ -96,7 +129,10 @@ export default function CheckOut() {
 							Apply
 						</button>
 					</div>
-					<Button sx={{ backgroundColor: '#DB4444', color: 'white' }}>
+					<Button
+						sx={{ backgroundColor: '#DB4444', color: 'white' }}
+						onClick={check}
+					>
 						Place Order
 					</Button>
 				</aside>

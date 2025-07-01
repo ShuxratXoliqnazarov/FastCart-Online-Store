@@ -27,8 +27,11 @@ import { API } from '../../utils/config'
 import { Autoplay, Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
-import { useWishlistStore } from '../../stores/wishlistStore' 
+import { useWishlistStore } from '../../stores/wishlistStore'
 import naush from '@/assets/naush.jpeg'
+import hx from '@/assets/for_swipper.jpg'
+import yx from '@/assets/prooo.jpg'
+import yy from '@/assets/yy.jpg'
 
 export default function Home() {
 	const { category, getCategory, getProducts, product } = useMainStore()
@@ -66,10 +69,8 @@ export default function Home() {
 
 		if (isInWishlist(prod.id)) {
 			removeItemFromWishlist(prod.id)
-			// toast.info('Successfully removed from wishlist✌️')
 		} else {
 			addItemToWishlist(prod)
-			// toast.info('Successfully added to wishlist✌️')
 		}
 	}
 
@@ -183,21 +184,21 @@ export default function Home() {
 						</SwiperSlide>
 						<SwiperSlide className='mt-[50px] rounded-[10px]'>
 							<img
-								src={mackBook}
+								src={yy}
 								alt='iPhone image 2'
 								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px]'
 							/>
 						</SwiperSlide>
 						<SwiperSlide className='mt-[50px]'>
 							<img
-								src={pq}
+								src={hx}
 								alt='iPhone image 3'
 								className='w-full h-[300px]  md:h-[450px] md:rounded-[10px]'
 							/>
 						</SwiperSlide>
 						<SwiperSlide className='mt-[50px]'>
 							<img
-								src={naush}
+								src={yx}
 								alt='iPhone image 4'
 								className='w-full h-[280px]  md:h-[450px] md:rounded-[10px]'
 							/>
@@ -233,6 +234,7 @@ export default function Home() {
 			{/* // ? Swiper 1 */}
 
 			<section className='hidden md:block md:max-w-[1400px] md:m-auto'>
+			
 				<div className='relative'>
 					<Swiper
 						spaceBetween={10}
@@ -260,11 +262,10 @@ export default function Home() {
 												className='hover:scale-110 transition-transform'
 												sx={{
 													backgroundColor: '',
-													// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+
 													color: isInWishlist(el.id) ? 'red' : 'gray',
 												}}
 											>
-												{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
 												{isInWishlist(el.id) ? (
 													<FavoriteIcon />
 												) : (

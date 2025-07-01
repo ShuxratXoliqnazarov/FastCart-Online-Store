@@ -33,7 +33,7 @@ export default function Wishlist() {
 					console.warn(
 						"Data in localStorage for 'wish' is not in the expected format (object with state.items array). Resetting wishlist."
 					)
-					savedItems = [] 
+					savedItems = []
 				}
 			}
 		} catch (e) {
@@ -137,9 +137,6 @@ export default function Wishlist() {
 			<section className='md:max-w-[1400px] md:m-auto p-5'>
 				<div className='flex justify-between items-center md:my-5 my-10'>
 					<h2>Wishlist ({wishlist.length})</h2>
-					<Button color='inherit' variant='outlined'>
-						Move All To Bag
-					</Button>
 				</div>
 				{wishlist.length === 0 ? (
 					<div className='text-center text-lg text-gray-600'>
@@ -220,7 +217,6 @@ export default function Wishlist() {
 							</div>
 						</div>
 
-						{/* Мобильная версия Wishlist */}
 						<div className='md:hidden '>
 							<Swiper
 								spaceBetween={10}
@@ -299,9 +295,6 @@ export default function Wishlist() {
 						<div className='bg-[#DB4444] w-[25px] h-[40px] rounded-[5px]'></div>
 						<p className='font-bold text-[20px] text-[#DB4444]'>Our Products</p>
 					</div>
-					<Button color='inherit' variant='outlined'>
-						See All
-					</Button>
 				</div>
 
 				<div className='hidden md:block'>

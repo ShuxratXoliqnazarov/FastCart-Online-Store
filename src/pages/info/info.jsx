@@ -1,21 +1,23 @@
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
-// import infoJostik from '@/assets/infoJostik.png' // Не используются в JSX, можно убрать если не нужны
-// import jst from '@/assets/jst.png' // Не используются в JSX, можно убрать если не нужны
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import delivery from '@/assets/delivery.png'
 import returnak from '@/assets/returnak.png'
 
 import { Button } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useInfoStore } from '../../stores/infoStore'
 import { useEffect, useState } from 'react'
+import { useWishlistStore } from '../../stores/wishlistStore'
+import { useCartStore } from '../../stores/cartStore'
 
 export default function Info() {
 	const { id } = useParams()
 	console.log('Info Id:', id)
 	const { getInfo, infoData } = useInfoStore()
+	const { addToCart } = useCartStore()
 	useEffect(() => {
 		getInfo(id)
-	}, [id]) // Добавил id в зависимости useEffect, чтобы данные обновлялись при смене ID
+	}, [id])
 
 	console.log('Info Datas.jsx: ', infoData)
 
@@ -24,17 +26,51 @@ export default function Info() {
 		if (infoData.images?.length > 0) {
 			setMainImage(infoData.images[0].images)
 		} else {
-			setMainImage(null) // Сбросить, если нет изображений
+			setMainImage(null)
 		}
 	}, [infoData])
 
-	const [cnt, setCnt] = useState(1) // Обычно количество начинается с 1, а не с 0
+	const [cnt, setCnt] = useState(1)
 
 	function inc() {
 		setCnt(prevCnt => prevCnt + 1)
 	}
 	function dec() {
-		setCnt(prevCnt => (prevCnt > 1 ? prevCnt - 1 : 1)) // Минимальное количество 1
+		setCnt(prevCnt => (prevCnt > 1 ? prevCnt - 1 : 1))
+	}
+
+	// ! Wishlist functions
+	const addItemToWishlist = useWishlistStore(state => state.addItem)
+	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
+	const wishlistItems = useWishlistStore(state => state.items)
+	const isInWishlist = id => wishlistItems.some(item => item.id === id)
+
+	function handleToggleWishlist(prod) {
+		if (!localStorage.getItem('token')) {
+			alert('Please registrate or login❗')
+			navigate('/login')
+			return
+		}
+
+		if (isInWishlist(prod.id)) {
+			removeItemFromWishlist(prod.id)
+		} else {
+			addItemToWishlist(prod)
+		}
+	}
+
+	const navigate = useNavigate()
+
+	function handleAddToCart(id) {
+		const token = localStorage.getItem('token')
+
+		if (!token) {
+			alert('Please login or registrate for adding product to cart❗')
+			navigate('/createAcount')
+			return
+		}
+
+		addToCart(id)
 	}
 
 	return (
@@ -169,6 +205,7 @@ export default function Info() {
 									backgroundColor: 'red',
 									'&:hover': { backgroundColor: 'darkred' },
 								}}
+								onClick={() => handleAddToCart(infoData.id)}
 								className='
                                     flex-grow sm:flex-grow-0 text-white font-semibold rounded-lg shadow-md
                                     hover:scale-105 transform transition-transform duration-200
@@ -178,24 +215,19 @@ export default function Info() {
 							</Button>
 
 							<Button
-								variant='outlined'
-								color='inherit'
+								color='error'
+								onClick={() => handleToggleWishlist(infoData)}
+								className='hover:scale-110 transition-transform'
 								sx={{
-									height: '50px',
-									minWidth: '50px',
-									borderColor: 'gray',
-									'&:hover': {
-										borderColor: 'red',
-										color: 'red',
-										backgroundColor: 'transparent',
-									},
+									backgroundColor: '',
+									color: isInWishlist(infoData.id) ? 'red' : 'gray',
 								}}
-								className='
-                                    rounded-lg hover:shadow-md
-                                    hover:scale-105 transform transition-transform duration-200
-                                '
 							>
-								<FavoriteBorderOutlinedIcon />
+								{isInWishlist(infoData.id) ? (
+									<FavoriteIcon />
+								) : (
+									<FavoriteBorderOutlinedIcon />
+								)}
 							</Button>
 						</div>
 

@@ -5,9 +5,13 @@ import { Button } from '@mui/material'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 
+// import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+
 import { API } from '../../utils/config'
 import { toast, Toaster } from 'sonner'
 import { useCartStore } from '../../stores/cartStore'
+import { useWishlistStore } from '../../stores/wishlistStore'
 
 export default function CategoryById() {
 	const { id } = useParams()
@@ -29,30 +33,52 @@ export default function CategoryById() {
 		}
 	}, [])
 
-	const wish = JSON.parse(localStorage.getItem('wish'))
+	// const wish = JSON.parse(localStorage.getItem('wish'))
 
-	function handleAddToWishlist(prod) {
+	// function handleAddToWishlist(prod) {
+	// 	if (!localStorage.getItem('token')) {
+	// 		alert('Please registrate or login❗')
+	// 		navigate('/login')
+	// 	} else {
+	// 		let find = wish.find(el => el.id == prod.id)
+	// 		if (!find) {
+	// 			let product = {
+	// 				id: prod.id,
+	// 				productName: prod.productName,
+	// 				image: prod.image,
+	// 				price: prod.price,
+	// 				categoryName: prod.categoryName,
+	// 			}
+	// 			wish.push(product)
+	// 			localStorage.setItem('wish', JSON.stringify(wish))
+	// 			toast.info('Succesfully added to wishlist✌️')
+	// 		} else {
+	// 			toast.error('The product is already added on wishlist❗')
+	// 		}
+	// 	}
+	// }
+	// ! Wishlist functions
+	const addItemToWishlist = useWishlistStore(state => state.addItem)
+	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
+	const wishlistItems = useWishlistStore(state => state.items)
+	const isInWishlist = id => wishlistItems.some(item => item.id === id)
+
+	function handleToggleWishlist(prod) {
 		if (!localStorage.getItem('token')) {
 			alert('Please registrate or login❗')
 			navigate('/login')
+			return
+		}
+
+		if (isInWishlist(prod.id)) {
+			removeItemFromWishlist(prod.id)
+			// toast.info('Successfully removed from wishlist✌️')
 		} else {
-			let find = wish.find(el => el.id == prod.id)
-			if (!find) {
-				let product = {
-					id: prod.id,
-					productName: prod.productName,
-					image: prod.image,
-					price: prod.price,
-					categoryName: prod.categoryName,
-				}
-				wish.push(product)
-				localStorage.setItem('wish', JSON.stringify(wish))
-				toast.info('Succesfully added to wishlist✌️')
-			} else {
-				toast.error('The product is already added on wishlist❗')
-			}
+			addItemToWishlist(prod)
+			// toast.info('Successfully added to wishlist✌️')
 		}
 	}
+
 	const navigate = useNavigate()
 
 	function handleAddToCart(id) {
@@ -114,14 +140,20 @@ export default function CategoryById() {
 									<div className='absolute top-3 right-3 flex flex-row gap-2'>
 										<Button
 											color='error'
-											onClick={() => handleAddToWishlist(el)}
+											onClick={() => handleToggleWishlist(el)}
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												color: 'red',
+												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											<FavoriteBorderOutlinedIcon />
+											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+											{isInWishlist(el.id) ? (
+												<FavoriteIcon />
+											) : (
+												<FavoriteBorderOutlinedIcon />
+											)}
 										</Button>
 										<Link
 											to={'/info/' + el.id}
