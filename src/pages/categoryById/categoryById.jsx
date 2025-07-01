@@ -5,7 +5,6 @@ import { Button } from '@mui/material'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 
-// import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 
 import { API } from '../../utils/config'
@@ -33,30 +32,6 @@ export default function CategoryById() {
 		}
 	}, [])
 
-	// const wish = JSON.parse(localStorage.getItem('wish'))
-
-	// function handleAddToWishlist(prod) {
-	// 	if (!localStorage.getItem('token')) {
-	// 		alert('Please registrate or login❗')
-	// 		navigate('/login')
-	// 	} else {
-	// 		let find = wish.find(el => el.id == prod.id)
-	// 		if (!find) {
-	// 			let product = {
-	// 				id: prod.id,
-	// 				productName: prod.productName,
-	// 				image: prod.image,
-	// 				price: prod.price,
-	// 				categoryName: prod.categoryName,
-	// 			}
-	// 			wish.push(product)
-	// 			localStorage.setItem('wish', JSON.stringify(wish))
-	// 			toast.info('Succesfully added to wishlist✌️')
-	// 		} else {
-	// 			toast.error('The product is already added on wishlist❗')
-	// 		}
-	// 	}
-	// }
 	// ! Wishlist functions
 	const addItemToWishlist = useWishlistStore(state => state.addItem)
 	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
@@ -144,11 +119,10 @@ export default function CategoryById() {
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+
 												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
 											{isInWishlist(el.id) ? (
 												<FavoriteIcon />
 											) : (

@@ -406,11 +406,11 @@ export default function Products() {
 										className='hover:scale-110 transition-transform'
 										sx={{
 											backgroundColor: '',
-											// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+											
 											color: isInWishlist(el.id) ? 'red' : 'gray',
 										}}
 									>
-										{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
+										
 										{isInWishlist(el.id) ? (
 											<FavoriteIcon />
 										) : (

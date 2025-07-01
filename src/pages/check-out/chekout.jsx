@@ -89,13 +89,6 @@ export default function CheckOut() {
 							<p>{el.price} tjs</p>
 						</div>
 					))}
-					{/* <div className='flex justify-between items-center'>
-						<div className='flex items-center gap-5'>
-							<img src={jst} alt='' className='h-[60px]' />
-							<h3 className='text-[25px]'>H1 Gamepad $1100</h3>
-						</div>
-						<p>$1100</p>
-					</div> */}
 
 					<div className='flex justify-between items-center border-t mt-[50px] pt-[40px]'>
 						<h3>Subtotal:</h3>

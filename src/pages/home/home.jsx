@@ -234,7 +234,6 @@ export default function Home() {
 			{/* // ? Swiper 1 */}
 
 			<section className='hidden md:block md:max-w-[1400px] md:m-auto'>
-			
 				<div className='relative'>
 					<Swiper
 						spaceBetween={10}
@@ -335,11 +334,10 @@ export default function Home() {
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+
 												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
 											{isInWishlist(el.id) ? (
 												<FavoriteIcon />
 											) : (
@@ -523,11 +521,10 @@ export default function Home() {
 												className='hover:scale-110 transition-transform'
 												sx={{
 													backgroundColor: '',
-													// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+
 													color: isInWishlist(el.id) ? 'red' : 'gray',
 												}}
 											>
-												{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
 												{isInWishlist(el.id) ? (
 													<FavoriteIcon />
 												) : (
@@ -704,11 +701,10 @@ export default function Home() {
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+
 												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
 											{isInWishlist(el.id) ? (
 												<FavoriteIcon />
 											) : (
@@ -785,11 +781,10 @@ export default function Home() {
 											className='hover:scale-110 transition-transform'
 											sx={{
 												backgroundColor: '',
-												// ! Здесь меняется цвет иконки в зависимости от состояния в Zustand
+
 												color: isInWishlist(el.id) ? 'red' : 'gray',
 											}}
 										>
-											{/* ! Здесь меняется сама иконка в зависимости от состояния в Zustand */}
 											{isInWishlist(el.id) ? (
 												<FavoriteIcon />
 											) : (
