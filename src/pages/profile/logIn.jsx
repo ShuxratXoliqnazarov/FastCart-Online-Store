@@ -1,5 +1,5 @@
 import { Button, TextField } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useRegisterStore } from '../../stores/registerStore'
 
 export default function LogIn() {
@@ -17,6 +17,7 @@ export default function LogIn() {
 		if (result.success) {
 			navigate('/')
 			localStorage.setItem('wish', JSON.stringify([]))
+			window.location.reload()
 		} else {
 			console.log(result.error)
 		}
@@ -59,7 +60,7 @@ export default function LogIn() {
 								// border: '1px solid gray',
 								padding: '10px 0px',
 							}}
-							>
+						>
 							Forgot Password ?
 						</Button>
 						<Button
@@ -75,11 +76,20 @@ export default function LogIn() {
 								color: 'white',
 							}}
 							type='submit'
-							>
+						>
 							Log In
 						</Button>
+						<Button color='success'>
+							<Link className='underline' to={'/createAcount'}>
+								Create account
+							</Link>
+						</Button>
 					</div>
-							{wrong && <span className='text-red-600 text-center '>Something is go wrong❗❗❗ </span>}
+					{wrong && (
+						<span className='text-red-600 text-center '>
+							Something is go wrong❗❗❗{' '}
+						</span>
+					)}
 				</form>
 			</section>
 		</>

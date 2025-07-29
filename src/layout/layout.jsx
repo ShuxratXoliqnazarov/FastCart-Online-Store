@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import logo from '@/assets/logo.png'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { Button, TextField } from '@mui/material'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
@@ -37,12 +37,15 @@ export default function Layout() {
 		setAnchorEl(null)
 	}
 
+	const navigate = useNavigate()
 	function logout() {
 		removeToken()
 		handleClose()
+		navigate('/')
+		window.location.reload()
 	}
 	// let darozi = JSON.parse(localStorage.getItem('wish'))
-	const wishlistCount = useWishlistStore(state => state.items.length);
+	const wishlistCount = useWishlistStore(state => state.items.length)
 	// console.log('DAROZI: ', darozi.state.items.length)
 
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -393,7 +396,7 @@ export default function Layout() {
 				</footer>
 			</div>
 
-			<Toaster position='top-right' richColors />
+			<Toaster position='bottom-right' richColors />
 		</>
 	)
 }

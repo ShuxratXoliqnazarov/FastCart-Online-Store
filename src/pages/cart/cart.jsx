@@ -1,5 +1,4 @@
 import { Button, TextField } from '@mui/material'
-import jst from '@/assets/jst.png'
 import { Link } from 'react-router-dom'
 import ReplayIcon from '@mui/icons-material/Replay'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'

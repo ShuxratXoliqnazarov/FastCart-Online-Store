@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { axiosStandart } from '../utils/axios'
 import { saveToken } from '../utils/token'
+import { toast } from 'sonner'
 
 export const useRegisterStore = create((set, get) => ({
 	isLoading: false,
@@ -19,7 +20,7 @@ export const useRegisterStore = create((set, get) => ({
 			return { success: false, error: errMsg }
 		}
 	},
-
+	
 	login: async user => {
 		try {
 			set({ isLoading: true, wrong: null })
@@ -27,6 +28,7 @@ export const useRegisterStore = create((set, get) => ({
 			set({ isLoading: false })
 			saveToken(response.data.data)
 			return { success: true, data: response.data.data }
+			
 		} catch (error) {
 			const errMsg = error.response?.data?.message || 'Unknown error'
 			set({ isLoading: false, wrong: errMsg })

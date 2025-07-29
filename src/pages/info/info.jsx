@@ -9,6 +9,7 @@ import { useInfoStore } from '../../stores/infoStore'
 import { useEffect, useState } from 'react'
 import { useWishlistStore } from '../../stores/wishlistStore'
 import { useCartStore } from '../../stores/cartStore'
+import { toast } from 'sonner'
 
 export default function Info() {
 	const { id } = useParams()
@@ -47,8 +48,37 @@ export default function Info() {
 
 	function handleToggleWishlist(prod) {
 		if (!localStorage.getItem('token')) {
-			alert('Please registrate or login❗')
-			navigate('/login')
+			
+			toast.custom(
+				t => (
+					<div className='flex flex-col gap-2 p-4 rounded-md shadow-md border border-gray-300 bg-white max-w-sm'>
+						<span className='text-sm text-black'>
+							Please registrate or login for adding product to your wishlist 😊
+						</span>
+						<div className='flex justify-end gap-2'>
+							<button
+								onClick={() => toast.dismiss(t)}
+								className='border border-gray-400 px-3 py-1 text-sm rounded hover:bg-gray-100 transition'
+							>
+								Отмена
+							</button>
+
+							<button
+								onClick={() => {
+									navigate('/login')
+									toast.dismiss(t)
+								}}
+								className='border border-blue-600 text-blue-600 px-3 py-1 text-sm rounded hover:bg-blue-50 transition'
+							>
+								Ok
+							</button>
+						</div>
+					</div>
+				),
+				{
+					duration: Infinity,
+				}
+			)
 			return
 		}
 
@@ -65,8 +95,37 @@ export default function Info() {
 		const token = localStorage.getItem('token')
 
 		if (!token) {
-			alert('Please login or registrate for adding product to cart❗')
-			navigate('/createAcount')
+			
+			toast.custom(
+				t => (
+					<div className='flex flex-col gap-2 p-4 rounded-md shadow-md border border-gray-300 bg-white max-w-sm'>
+						<span className='text-sm text-black'>
+							Please registrate or login for adding product to your cart 😊
+						</span>
+						<div className='flex justify-end gap-2'>
+							<button
+								onClick={() => toast.dismiss(t)}
+								className='border border-gray-400 px-3 py-1 text-sm rounded hover:bg-gray-100 transition'
+							>
+								Отмена
+							</button>
+
+							<button
+								onClick={() => {
+									navigate('/login')
+									toast.dismiss(t)
+								}}
+								className='border border-blue-600 text-blue-600 px-3 py-1 text-sm rounded hover:bg-blue-50 transition'
+							>
+								Ok
+							</button>
+						</div>
+					</div>
+				),
+				{
+					duration: Infinity,
+				}
+			)
 			return
 		}
 

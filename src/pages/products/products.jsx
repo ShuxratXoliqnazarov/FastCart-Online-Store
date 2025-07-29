@@ -7,7 +7,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import StarOutlineOutlinedIcon from '@mui/icons-material/StarOutlineOutlined'
 import Box from '@mui/material/Box'
@@ -19,7 +19,6 @@ import { useCartStore } from '../../stores/cartStore'
 import { toast, Toaster } from 'sonner'
 import { useWishlistStore } from '../../stores/wishlistStore'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-
 
 export default function Products() {
 	const {
@@ -66,107 +65,94 @@ export default function Products() {
 		getBrand()
 	}, [])
 
-	// const wish = JSON.parse(localStorage.getItem('wish'))
-	// function handleAddToWishlist(prod) {
-	// 	if (!localStorage.getItem('token')) {
-	// 		alert('Please registrate or login❗')
-	// 		navigate('/login')
-	// 	} else {
-	// 		let find = wish.find(el => el.id == prod.id)
-
-	// 		if (!find) {
-	// 			let product = {
-	// 				id: prod.id,
-	// 				productName: prod.productName,
-	// 				image: prod.image,
-	// 				price: prod.price,
-	// 				categoryName: prod.categoryName,
-	// 			}
-	// 			wish.push(product)
-	// 			localStorage.setItem('wish', JSON.stringify(wish))
-	// 			toast.info('Succesfully added to wishlist✌️')
-	// 		} else {
-	// 			toast.error('The product is already added on wishlist❗')
-	// 		}
-	// 	}
-	// }
-
 	// ! Wishlist functions
 	const addItemToWishlist = useWishlistStore(state => state.addItem)
 	const removeItemFromWishlist = useWishlistStore(state => state.removeItem)
-	// const isInWishlist = useWishlistStore(state => state.isInWishlist)
 	const wishlistItems = useWishlistStore(state => state.items)
 	const isInWishlist = id => wishlistItems.some(item => item.id === id)
 
+	const navigate = useNavigate()
 	function handleToggleWishlist(prod) {
 		if (!localStorage.getItem('token')) {
-			alert('Please registrate or login❗')
-			navigate('/login')
+			
+
+			toast.custom(
+				t => (
+					<div className='flex flex-col gap-2 p-4 rounded-md shadow-md border border-gray-300 bg-white max-w-sm'>
+						<span className='text-sm text-black'>
+							Please registrate or login for adding product to your wishlist 😊
+						</span>
+						<div className='flex justify-end gap-2'>
+							<button
+								onClick={() => toast.dismiss(t)}
+								className='border border-gray-400 px-3 py-1 text-sm rounded hover:bg-gray-100 transition'
+							>
+								Отмена
+							</button>
+
+							<button
+								onClick={() => {
+									navigate('/login')
+									toast.dismiss(t)
+								}}
+								className='border border-blue-600 text-blue-600 px-3 py-1 text-sm rounded hover:bg-blue-50 transition'
+							>
+								Ok
+							</button>
+						</div>
+					</div>
+				),
+				{
+					duration: Infinity,
+				}
+			)
+
+			// navigate('/login')
 			return
 		}
 
 		if (isInWishlist(prod.id)) {
 			removeItemFromWishlist(prod.id)
-			// toast.info('Successfully removed from wishlist✌️')
 		} else {
 			addItemToWishlist(prod)
-			// toast.info('Successfully added to wishlist✌️')
 		}
 	}
-
-	// const SwiperNavButtons = () => {
-	// 	const swiper = useSwiper()
-
-	// 	return (
-	// 		<div className='absolute top-[-20px] right-0 z-10 flex gap-2 mt-4 mr-4'>
-	// 			<button
-	// 				className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
-	// 				onClick={() => swiper.slidePrev()}
-	// 			>
-	// 				<svg
-	// 					className='w-5 h-5 text-gray-700'
-	// 					fill='none'
-	// 					stroke='currentColor'
-	// 					viewBox='0 0 24 24'
-	// 					xmlns='http://www.w3.org/2000/svg'
-	// 				>
-	// 					<path
-	// 						strokeLinecap='round'
-	// 						strokeLinejoin='round'
-	// 						strokeWidth='2'
-	// 						d='M10 19l-7-7m0 0l7-7m-7 7h18'
-	// 					></path>
-	// 				</svg>
-	// 			</button>
-	// 			<button
-	// 				className='w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors'
-	// 				onClick={() => swiper.slideNext()}
-	// 			>
-	// 				<svg
-	// 					className='w-5 h-5 text-gray-700'
-	// 					fill='none'
-	// 					stroke='currentColor'
-	// 					viewBox='0 0 24 24'
-	// 					xmlns='http://www.w3.org/2000/svg'
-	// 				>
-	// 					<path
-	// 						strokeLinecap='round'
-	// 						strokeLinejoin='round'
-	// 						strokeWidth='2'
-	// 						d='M14 5l7 7m0 0l-7 7m7-7H3'
-	// 					></path>
-	// 				</svg>
-	// 			</button>
-	// 		</div>
-	// 	)
-	// }
 
 	function handleAddToCart(id) {
 		const token = localStorage.getItem('token')
 
 		if (!token) {
-			alert('Please login or registrate for adding product to cart❗')
-			navigate('/createAcount')
+			toast.custom(
+				t => (
+					<div className='flex flex-col gap-2 p-4 rounded-md shadow-md border border-gray-300 bg-white max-w-sm'>
+						<span className='text-sm text-black'>
+							Please registrate or login for adding product to your cart 😊
+						</span>
+						<div className='flex justify-end gap-2'>
+							<button
+								onClick={() => toast.dismiss(t)}
+								className='border border-gray-400 px-3 py-1 text-sm rounded hover:bg-gray-100 transition'
+							>
+								Отмена
+							</button>
+
+							<button
+								onClick={() => {
+									navigate('/login')
+									toast.dismiss(t)
+								}}
+								className='border border-blue-600 text-blue-600 px-3 py-1 text-sm rounded hover:bg-blue-50 transition'
+							>
+								Ok
+							</button>
+						</div>
+					</div>
+				),
+				{
+					duration: Infinity,
+				}
+			)
+			// navigate('/createAcount')
 			return
 		}
 
@@ -406,11 +392,10 @@ export default function Products() {
 										className='hover:scale-110 transition-transform'
 										sx={{
 											backgroundColor: '',
-											
+
 											color: isInWishlist(el.id) ? 'red' : 'gray',
 										}}
 									>
-										
 										{isInWishlist(el.id) ? (
 											<FavoriteIcon />
 										) : (
@@ -462,7 +447,7 @@ export default function Products() {
 			>
 				More Products
 			</Button>
-			<Toaster position='top-right' richColors />
+			{/* <Toaster position='top-right' richColors /> */}
 		</>
 	)
 }

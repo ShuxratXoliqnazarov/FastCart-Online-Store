@@ -61,10 +61,10 @@ export default function Wishlist() {
 		}
 
 		const newStoredData = {
-			...currentStoredData, // Копируем остальные свойства, если они есть (например, 'version')
+			...currentStoredData,
 			state: {
-				...currentStoredData.state, // Копируем остальные свойства state, если они есть
-				items: updatedItems, // Обновляем массив items
+				...currentStoredData.state,
+				items: updatedItems,
 			},
 		}
 
@@ -411,7 +411,7 @@ export default function Wishlist() {
 					</Swiper>
 				</section>
 			</section>
-			<Toaster position='top-right' richColors />
+			{/* <Toaster position='top-right' richColors /> */}
 		</>
 	)
 }

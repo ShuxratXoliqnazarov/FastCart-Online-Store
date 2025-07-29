@@ -44,8 +44,10 @@ export const useCartStore = create((set, get) => ({
 		try {
 			await axiosRequest.delete('/Cart/delete-product-from-cart?id=' + id)
 			get().getProduct()
+			toast.info('The product is deleted from cart ❗')
 		} catch (error) {
 			console.log(error)
+			toast.error('Something is go wrong ❗')
 		}
 	},
 
@@ -53,8 +55,10 @@ export const useCartStore = create((set, get) => ({
 		try {
 			await axiosRequest.delete('/Cart/clear-cart', {})
 			get().getProduct()
+			toast.info('The cart is clear ❗')
 		} catch (error) {
 			console.log(error)
+			toast.error('Something is go wrong ❗')
 		}
 	},
 }))
